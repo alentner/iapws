@@ -1,7 +1,7 @@
 import unittest
-from if97 import region1
+from if97 import region1, region4
 
-class test_ThermodynamicProperty_Region1(unittest.TestCase):
+class test_ThermodynamicProperty(unittest.TestCase):
     def test_ThermodynamicProperty_Region1_state1(self):
         self.assertEqual(round(region1.v(3, 300), 11), 0.100215168E-2, 'Failed specific volume, state 1, region 1!')
         self.assertEqual(round(region1.h(3, 300), 6), 0.115331273E3, 'Failed specific enthalpy, state 1, region 1!')
@@ -26,5 +26,14 @@ class test_ThermodynamicProperty_Region1(unittest.TestCase):
         self.assertEqual(round(region1.cp(3, 500), 8), 0.465580682E1, 'Failed specific heat capacity, state 1, region 1!')
         self.assertEqual(round(region1.cv(3, 500), 8), 0.322139223E1, 'Failed specific heat capacity, state 1, region 1!')
         self.assertEqual(round(region1.w(3, 500), 5), 0.124071337E4, 'Failed speed of sound, state 1, region 1!')
+    def test_ThermodynamicProperty_Region4_satP(self):
+        self.assertEqual(round(region4.satP(300), 11), 0.353658941E-2, 'Failed satuation pressure, 300K!') 
+        self.assertEqual(round(region4.satP(500), 8), 0.263889776E1, 'Failed satuation pressure, 500K!') 
+        self.assertEqual(round(region4.satP(600), 7), 0.123443146E2, 'Failed satuation pressure, 600K!') 
+    def test_ThermodynamicProperty_Region4_satT(self):
+        self.assertEqual(round(region4.satT(0.10), 6), 0.372755919E3, 'Failed satuation pressure, 0.1 MPa!') 
+        self.assertEqual(round(region4.satT(1.00), 6), 0.453035632E3, 'Failed satuation pressure, 1.0 MPa!') 
+        self.assertEqual(round(region4.satT(10.0), 6), 0.584149488E3, 'Failed satuation pressure, 10 MPa!') 
+
 if __name__ == '__main__':
     unittest.main()

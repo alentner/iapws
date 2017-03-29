@@ -29,6 +29,9 @@
     <Compile Include="if97\region1.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="if97\region4.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="if97\tests.py">
       <SubType>Code</SubType>
     </Compile>
