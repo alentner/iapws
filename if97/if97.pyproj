@@ -26,6 +26,9 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="if97\conversion.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="if97\region1.py">
       <SubType>Code</SubType>
     </Compile>

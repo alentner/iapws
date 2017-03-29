@@ -1,5 +1,5 @@
 import unittest
-from if97 import region1, region4
+from if97 import region1, region4, conversion
 
 class test_ThermodynamicProperty(unittest.TestCase):
     def test_ThermodynamicProperty_Region1_state1(self):
@@ -34,6 +34,25 @@ class test_ThermodynamicProperty(unittest.TestCase):
         self.assertEqual(round(region4.satT(0.10), 6), 0.372755919E3, 'Failed satuation pressure, 0.1 MPa!') 
         self.assertEqual(round(region4.satT(1.00), 6), 0.453035632E3, 'Failed satuation pressure, 1.0 MPa!') 
         self.assertEqual(round(region4.satT(10.0), 6), 0.584149488E3, 'Failed satuation pressure, 10 MPa!') 
+class test_UnitConversion(unittest.TestCase):
+    def test_Conversion_Temperature_0K(self):
+        self.assertEqual(round(conversion.temp_K_C(0), 2), -273.15, 'Failed Kelvin to Celsius, Absolute zero!') 
+        self.assertEqual(round(conversion.temp_C_F(conversion.temp_K_C(0)), 2), -459.67, 'Failed Kelvin to Fahrenheit, Absolute zero!')
+        self.assertEqual(round(conversion.temp_F_R(conversion.temp_C_F(conversion.temp_K_C(0))), 2), 0.00, 'Failed Kelvin to Rankine, Absolute zero!')
+    def test_Conversion_Temperature_0F(self):
+        self.assertEqual(round(conversion.temp_C_K(conversion.temp_F_C(0)), 2), 255.37, 'Failed Fahrenheit to Kelvin , Freezing point of brine!')
+        self.assertEqual(round(conversion.temp_F_C(0), 2), -17.78, 'Failed Fahrenheit to Celsius, Freezing point of brine!') 
+        self.assertEqual(round(conversion.temp_F_R(0), 2), 459.67, 'Failed Fahrenheit to Rankine, Freezing point of brine!')
+    def test_Conversion_Temperature_0C(self):
+        self.assertEqual(round(conversion.temp_C_K(0), 2), 273.15, 'Failed Celsius to Kelvin , Freezing point of water!')
+        self.assertEqual(round(conversion.temp_C_F(0), 2), 32.00, 'Failed Celsius to Fahrenheit, Freezing point of water!') 
+        self.assertEqual(round(conversion.temp_F_R(conversion.temp_C_F(0)), 2), 491.67, 'Failed Celsius to Rankine, Freezing point of water!')
+    def test_Conversion_Temperature_100C(self):
+        self.assertEqual(round(conversion.temp_C_K(conversion.temp_F_C(conversion.temp_R_F(671.64102))), 2), 373.13, 'Failed Rankine to Kelvin , Boiling point of water!')
+        self.assertEqual(round(conversion.temp_R_F(671.64102), 2), 211.97, 'Failed Rankine to Fahrenheit, Boiling point of water!')
+    def test_Conversion_Pressure(self):
+        self.assertEqual(round(conversion.press_psia_MPa(1300), 2), 8.96, 'Failed psia to Mpa, Atmosphere of Venus!')
+        self.assertEqual(round(conversion.press_MPa_psia(0.08), 2), 11.60, 'Failed MPa to psia, Vacuum cleaner!')
 
 if __name__ == '__main__':
     unittest.main()
