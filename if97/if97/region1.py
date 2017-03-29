@@ -6,6 +6,11 @@ n = [0.14632971213167, -0.84548187169114, -0.37563603672040E1, 0.33855169168385E
      -0.85205128120103E-9, -0.22425281908000E-5, -0.65171222895601E-6, -0.14341729937924E-12, -0.40516996860117E-6, -0.12734301741641E-8, -0.17424871230634E-9, -0.68762131295531E-18, 0.14478307828521E-19, 0.26335781662795E-22,
      -0.11947622640071E-22, 0.18228094581404E-23, -0.93537087292458E-25]
 
+# Non-dimenionalization for region 1
+Ps = 16.53      #[Mpa]
+Ts = 1386       #[K]
+R = 0.461526    #[KJ / Kg K]
+
 def gamma(pi, tau):
     sum = 0
     for Ii, Ji, ni in zip(I, J, n):
@@ -37,58 +42,50 @@ def gamma_pitau(pi, tau):
         sum += -ni * Ii * (7.1 - pi)**(Ii - 1) * Ji * (tau - 1.222)**(Ji - 1)
     return sum
 def gibbs(P, T):
-    pi = P / 16.53
-    tau = 1386 / T
+    pi = P / Ps
+    tau = Ts / T
     R = 0.461526
 
     return gamma(pi, tau) * R * T
 def v(P, T):
-    pi = P / 16.53
-    tau = 1386 / T
+    pi = P / Ps
+    tau = Ts / T
     R = 0.461526
 
     return pi * gamma_pi(pi, tau) * R * T / (P * 10**6 / 1000)
 def h(P, T):
-    pi = P / 16.53
-    tau = 1386 / T
+    pi = P / Ps
+    tau = Ts / T
     R = 0.461526
 
     return tau * gamma_tau(pi, tau) * R * T
 def u(P, T):
-    pi = P / 16.53
-    tau = 1386 / T
+    pi = P / Ps
+    tau = Ts / T
     R = 0.461526
 
     return (tau * gamma_tau(pi, tau) - pi * gamma_pi(pi, tau)) * R * T    
 def s(P, T):
-    pi = P / 16.53
-    tau = 1386 / T
+    pi = P / Ps
+    tau = Ts / T
     R = 0.461526
 
     return (tau * gamma_tau(pi, tau) - gamma(pi, tau)) * R
 def cp(P, T):
-    pi = P / 16.53
-    tau = 1386 / T
+    pi = P / Ps
+    tau = Ts / T
     R = 0.461526
 
     return -tau**2 * gamma_tautau(pi, tau) * R
 def cv(P, T):
-    pi = P / 16.53
-    tau = 1386 / T
+    pi = P / Ps
+    tau = Ts / T
     R = 0.461526
 
     return (-tau**2 * gamma_tautau(pi, tau) + (gamma_pi(pi, tau) - tau * gamma_pitau(pi, tau))**2 / gamma_pipi(pi, tau)) * R
 def w(P, T):
-    pi = P / 16.53
-    tau = 1386 / T
+    pi = P / Ps
+    tau = Ts / T
     R = 0.461526
 
     return (gamma_pi(pi, tau)**2 * R * T * 1000 / ((gamma_pi(pi, tau) - tau * gamma_pitau(pi, tau))**2 / (tau**2 * gamma_tautau(pi, tau)) - gamma_pipi(pi, tau)))**0.5
-
-# Temporary project entry point
-#def sayhello():
-#    print('Hello World!')
-#    print(v(3, 300))
-
-#if __name__ == '__main__':
-#    sayhello()

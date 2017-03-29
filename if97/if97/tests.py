@@ -1,7 +1,7 @@
 import unittest
 from if97 import region1
 
-class Test_ThermodynamicProperty_Region1(unittest.TestCase):
+class test_ThermodynamicProperty_Region1(unittest.TestCase):
     def test_ThermodynamicProperty_Region1_state1(self):
         self.assertEqual(round(region1.v(3, 300), 11), 0.100215168E-2, 'Failed specific volume, state 1, region 1!')
         self.assertEqual(round(region1.h(3, 300), 6), 0.115331273E3, 'Failed specific enthalpy, state 1, region 1!')
