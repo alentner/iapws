@@ -4,14 +4,14 @@
 from setuptools import setup
 
 # Get the long description from the README file
-with open('readme.rst') as file:
+with open('readme.md') as file:
 
     long_description = file.read()
 
 # Define the setup configuration
 setup(
     name = 'if97',
-    version = '1.0.4',
+    version = '1.0.15',
     description = 'A Python package for providing water properties', 
     long_description = long_description,
     url = 'https://github.com/alentner/if97',

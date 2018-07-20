@@ -47,7 +47,7 @@
   <ItemGroup>
     <Content Include="license.txt" />
     <Content Include="manifest.in" />
-    <Content Include="readme.rst" />
+    <Content Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="if97\" />
