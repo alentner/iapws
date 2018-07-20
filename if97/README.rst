@@ -11,9 +11,6 @@ International Association for the Properties of Water and Steam.
 
 	Not implemented equations list:
 	-  Backward Equation T(p,s)			: Region 1
-	-  Basic Equation 					: Region 2
-	   	Specific isochoric heat capacity
-		Speed of sound
 	-  Backward Equation T(p,s)			: Region 2
 	-  Supplementary ... Metastable-Vapor 	: Region 2
 	-  Basic Equation for Region 3			: Region 3
