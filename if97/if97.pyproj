@@ -1,11 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>8481693f-11b7-450a-9658-21c50cad5fef</ProjectGuid>
+    <ProjectGuid>29595bcd-a561-45fa-953b-06c0a65a6f70</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>if97\region1.py</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,40 +21,38 @@
     <DebugSymbols>true</DebugSymbols>
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
-  <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
-  </PropertyGroup>
   <ItemGroup>
-    <Compile Include="if97\conversion.py">
+    <Compile Include="if97\h2o.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="if97\region1.py">
+    <Compile Include="if97\region1_ext.py" />
+    <Compile Include="if97\region1.py" />
+    <Compile Include="if97\region2_ext.py" />
+    <Compile Include="if97\region2.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="if97\region3.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="if97\region4_ext.py" />
     <Compile Include="if97\region4.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="if97\tests.py">
+    <Compile Include="if97\test.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="setup.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="if97\__init__.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="setup.py" />
+    <Compile Include="if97\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="license.txt" />
+    <Content Include="manifest.in" />
+    <Content Include="readme.rst" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="if97\" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="LICENSE.txt" />
-    <Content Include="MANIFEST.in" />
-    <Content Include="README.rst" />
-  </ItemGroup>
-  <Import Condition="Exists($(PtvsTargetsFile))" Project="$(PtvsTargetsFile)" />
-  <Import Condition="!Exists($(PtvsTargetsFile))" Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
        Visual Studio and specify your pre- and post-build commands in
        the BeforeBuild and AfterBuild targets below. -->
