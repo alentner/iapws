@@ -6,6 +6,7 @@ n = [ 0.11670521452767e+04, -0.72421316703206e+06, -0.17073846940092e+02, 0.1202
 Pb = 1.0    #[Mpa]
 Tb = 1.0    #[K]
 
+#### P-T saturation curves ####
 def satP(T):
     """ Saturation pressure as a function of temperature [MPa]"""
     v = T / Tb + n[8] / ((T / Tb) - n[9])
@@ -15,7 +16,6 @@ def satP(T):
     C = n[5] * v**2 + n[6] * v + n[7]
 
     return Pb * (2 * C / (-B + (B**2 - 4 * A * C)**0.5))**4
-
 def satT(P):
     """ Saturation Temperature as a function of pressure [K]"""
     b = (P / Pb)**0.25

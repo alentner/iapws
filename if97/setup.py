@@ -11,7 +11,7 @@ with open('readme.md') as file:
 # Define the setup configuration
 setup(
     name = 'if97',
-    version = '1.0.15',
+    version = '1.0.48',
     description = 'A Python package for providing water properties', 
     long_description = long_description,
     url = 'https://github.com/alentner/if97',

@@ -25,16 +25,13 @@
     <Compile Include="if97\h2o.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="if97\region1_ext.py" />
     <Compile Include="if97\region1.py" />
-    <Compile Include="if97\region2_ext.py" />
     <Compile Include="if97\region2.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="if97\region3.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="if97\region4_ext.py" />
     <Compile Include="if97\region4.py">
       <SubType>Code</SubType>
     </Compile>
