@@ -1,6 +1,8 @@
 import unittest
 from if97 import region1, region2, region3, region4, h2o
 import numpy
+import matplotlib
+from matplotlib import pyplot, cm
 
 class test_ThermodynamicProperty(unittest.TestCase):
     def test_ThermodynamicProperty_Region1_State1(self):
@@ -80,7 +82,69 @@ class test_ThermodynamicProperty(unittest.TestCase):
         self.assertEqual(round(region4.satT(0.10), 6), 0.372755919e3, 'Failed satuation pressure, 0.1 MPa!') 
         self.assertEqual(round(region4.satT(1.00), 6), 0.453035632e3, 'Failed satuation pressure, 1.0 MPa!') 
         self.assertEqual(round(region4.satT(10.0), 6), 0.584149488e3, 'Failed satuation pressure, 10 MPa!') 
+
 class test_ThermodynamicDerivative(unittest.TestCase):
+    def test_ThermodynamicPartialP_Region4_state1(self):
+        n = 10
+        P = numpy.logspace(-3, numpy.log10(h2o.satP(623.15) -  0.1), n)
+
+        dvfdpn = [(h2o.vf(i + i/100) - h2o.vf(i - i/100)) / (2*i/100 * 1e3) for i in P]
+        dufdpn = [(h2o.uf(i + i/100) - h2o.uf(i - i/100)) / (2*i/100 * 1e3) for i in P]
+        dhfdpn = [(h2o.hf(i + i/100) - h2o.hf(i - i/100)) / (2*i/100 * 1e3) for i in P]
+        dsfdpn = [(h2o.sf(i + i/100) - h2o.sf(i - i/100)) / (2*i/100 * 1e3) for i in P]
+        dgfdpn = [(h2o.gf(i + i/100) - h2o.gf(i - i/100)) / (2*i/100 * 1e3) for i in P]
+        
+        dvfdp  = [h2o.dvfdP(i) for i in P]
+        dufdp  = [h2o.dufdP(i) for i in P]
+        dhfdp  = [h2o.dhfdP(i) for i in P]
+        dsfdp  = [h2o.dsfdP(i) for i in P]
+        dgfdp  = [h2o.dgfdP(i) for i in P]
+
+        self.assertLessEqual(abs(sum([(abs(dvfdp[i] - dvfdpn[i]) / dvfdpn[i]) for i in range(n)]) * 100), 0.05,  'Failed dvdP, state 1, region 4!')
+        self.assertLessEqual(abs(sum([(abs(dufdp[i] - dufdpn[i]) / dufdpn[i]) for i in range(n)]) * 100), 0.05,  'Failed dudP, state 1, region 4!')
+        self.assertLessEqual(abs(sum([(abs(dhfdp[i] - dhfdpn[i]) / dhfdpn[i]) for i in range(n)]) * 100), 0.05,  'Failed dhdP, state 1, region 4!')
+        self.assertLessEqual(abs(sum([(abs(dsfdp[i] - dsfdpn[i]) / dsfdpn[i]) for i in range(n)]) * 100), 0.05,  'Failed dsdP, state 1, region 4!')
+        self.assertLessEqual(abs(sum([(abs(dgfdp[i] - dgfdpn[i]) / dgfdpn[i]) for i in range(n)]) * 100), 0.05,  'Failed dgdP, state 1, region 4!')
+    def test_ThermodynamicPartialP_Region4_state2(self):
+        n = 10
+        P = numpy.logspace(-3, numpy.log10(h2o.satP(623.15) -  0.1), n)
+
+        dvgdpn = [(h2o.vg(i + i/100) - h2o.vg(i - i/100)) / (2*i/100 * 1e3) for i in P]
+        dugdpn = [(h2o.ug(i + i/100) - h2o.ug(i - i/100)) / (2*i/100 * 1e3) for i in P]
+        dhgdpn = [(h2o.hg(i + i/100) - h2o.hg(i - i/100)) / (2*i/100 * 1e3) for i in P]
+        dsgdpn = [(h2o.sg(i + i/100) - h2o.sg(i - i/100)) / (2*i/100 * 1e3) for i in P]
+        dggdpn = [(h2o.gg(i + i/100) - h2o.gg(i - i/100)) / (2*i/100 * 1e3) for i in P]
+        
+        dvgdp  = [h2o.dvgdP(i) for i in P]
+        dugdp  = [h2o.dugdP(i) for i in P]
+        dhgdp  = [h2o.dhgdP(i) for i in P]
+        dsgdp  = [h2o.dsgdP(i) for i in P]
+        dggdp  = [h2o.dggdP(i) for i in P]
+
+        self.assertLessEqual(abs(sum([(abs(dvgdp[i] - dvgdpn[i]) / dvgdpn[i]) for i in range(n)]) * 100), 0.1,   'Failed dvdP, state 2, region 4!')
+        self.assertLessEqual(abs(sum([(abs(dugdp[i] - dugdpn[i]) / dugdpn[i]) for i in range(n)]) * 100), 0.05,  'Failed dudP, state 2, region 4!')
+        self.assertLessEqual(abs(sum([(abs(dhgdp[i] - dhgdpn[i]) / dhgdpn[i]) for i in range(n)]) * 100), 0.05,  'Failed dhdP, state 2, region 4!')
+        self.assertLessEqual(abs(sum([(abs(dsgdp[i] - dsgdpn[i]) / dsgdpn[i]) for i in range(n)]) * 100), 0.05,  'Failed dsdP, state 2, region 4!')
+        self.assertLessEqual(abs(sum([(abs(dggdp[i] - dggdpn[i]) / dggdpn[i]) for i in range(n)]) * 100), 0.05,  'Failed dgdP, state 2, region 4!')
+    def test_ThermodynamicPartialP_Region4_state3(self):
+        n = 10
+        P = numpy.logspace(-3, numpy.log10(h2o.satP(623.15) -  0.1), n)
+        h = h2o.h_e(h2o.satP(623.15), 0.5)
+
+        dvdpn = [(h2o.v_e(i + i/100, h) - h2o.v_e(i - i/100, h)) / (2*i/100 * 1e3) for i in P]
+        dudpn = [(h2o.u_e(i + i/100, h) - h2o.u_e(i - i/100, h)) / (2*i/100 * 1e3) for i in P]
+        dsdpn = [(h2o.s_e(i + i/100, h) - h2o.s_e(i - i/100, h)) / (2*i/100 * 1e3) for i in P]
+        dgdpn = [(h2o.g_e(i + i/100, h) - h2o.g_e(i - i/100, h)) / (2*i/100 * 1e3) for i in P]
+        
+        dvdp  = [h2o.dvdP_e(i, h) for i in P]
+        dudp  = [h2o.dudP_e(i, h) for i in P]
+        dsdp  = [h2o.dsdP_e(i, h) for i in P]
+        dgdp  = [h2o.dgdP_e(i, h) for i in P]
+
+        self.assertLessEqual(abs(sum([(abs(dvdp[i] - dvdpn[i]) / dvdpn[i]) for i in range(n)]) * 100), 0.10,  'Failed dvdP, state 3, region 4!')
+        self.assertLessEqual(abs(sum([(abs(dudp[i] - dudpn[i]) / dudpn[i]) for i in range(n)]) * 100), 0.05,  'Failed dudP, state 3, region 4!')
+        self.assertLessEqual(abs(sum([(abs(dsdp[i] - dsdpn[i]) / dsdpn[i]) for i in range(n)]) * 100), 0.05,  'Failed dsdP, state 3, region 4!')
+        self.assertLessEqual(abs(sum([(abs(dgdp[i] - dgdpn[i]) / dgdpn[i]) for i in range(n)]) * 100), 0.05,  'Failed dgdP, state 3, region 4!')
     def test_ThermodynamicPartialT_Region1_state1(self):
         n = 100
         p = 3
@@ -345,6 +409,7 @@ class test_ThermodynamicDerivative(unittest.TestCase):
         self.assertLessEqual(abs(sum([(abs(dhdv[i] - dhdvn[i]) / dhdvn[i]) for i in range(n)]) * 100), 0.05,  'Failed dhdv, state 1, region 3!')
         self.assertLessEqual(abs(sum([(abs(dsdv[i] - dsdvn[i]) / dsdvn[i]) for i in range(n)]) * 100), 0.05,  'Failed dsdv, state 1, region 3!')
         self.assertLessEqual(abs(sum([(abs(dfdv[i] - dfdvn[i]) / dfdvn[i]) for i in range(n)]) * 100), 0.05,  'Failed dfdv, state 1, region 3!')
+
 class test_ThermodynamicPropertyBackwards(unittest.TestCase):
     def test_ThermodynamicProperty_Region1_backwards(self):
         self.assertEqual(round(region1.T_h(3, 500), 6),   0.391798509e3, 'Failed backward temperature, state 1, region 1!') 
@@ -421,6 +486,7 @@ class test_ThermodynamicPropertyBackwards(unittest.TestCase):
         self.assertAlmostEqual(region2.w(30, 700)  / region2.w_h(30,  region2.h(30, 700)), 1.000, places=2, msg='Failed w consistancy, state 3, region 2!')
         self.assertAlmostEqual(region2.a(30, 700)  / region2.a_h(30,  region2.h(30, 700)), 1.000, places=2, msg='Failed a consistancy, state 3, region 2!')
         self.assertAlmostEqual(region2.k(30, 700)  / region2.k_h(30,  region2.h(30, 700)), 1.000, places=2, msg='Failed k consistancy, state 3, region 2!')
+
 class test_ThermodynamicDerivativeBackwards(unittest.TestCase):
     def test_ThermodynamicPartialP_Region1_state1_backwards(self):
         n = 100
@@ -510,6 +576,7 @@ class test_ThermodynamicDerivativeBackwards(unittest.TestCase):
         self.assertLessEqual(abs(sum([(abs(dsdp[i] - dsdpn[i]) / dsdpn[i]) for i in range(n)]) * 100), 2.90 * n,  'Failed dsdp_h, state 2, region 2!')
         self.assertLessEqual(abs(sum([(abs(dgdp[i] - dgdpn[i]) / dgdpn[i]) for i in range(n)]) * 100), 2.90 * n,  'Failed dgdp_h, state 2, region 2!')
         self.assertLessEqual(abs(sum([(abs(dTdp[i] - dTdpn[i]) / dTdpn[i]) for i in range(n)]) * 100), 2.90**2  * n,  'Failed dTdp_h, state 2, region 2!')
+
 class test_ThermodynamicWrapper(unittest.TestCase):
     def test_ThermodynamicWrapper_Region1_State1(self):
         self.assertEqual(h2o.v(3, 300),  region1.v(3, 300),  'Failed specific volume, state 1, region 1!')
@@ -519,6 +586,8 @@ class test_ThermodynamicWrapper(unittest.TestCase):
         self.assertEqual(h2o.cp(3, 300), region1.cp(3, 300), 'Failed specific heat capacity, state 1, region 1!')
         self.assertEqual(h2o.cv(3, 300), region1.cv(3, 300), 'Failed specific heat capacity, state 1, region 1!')
         self.assertEqual(h2o.w(3, 300),  region1.w(3, 300),  'Failed speed of sound, state 1, region 1!')
+        self.assertEqual(h2o.a(3, 300),  region1.a(3, 300),  'Failed expansion coefficient, state 1, region 1!')
+        self.assertEqual(h2o.k(3, 300),  region1.k(3, 300),  'Failed compressability, state 1, region 1!')
     def test_ThermodynamicWrapper_Region1_State2(self):
         self.assertEqual(h2o.v(80, 300),  region1.v(80, 300),  'Failed specific volume, state 2, region 1!')
         self.assertEqual(h2o.u(80, 300),  region1.u(80, 300),  'Failed specific internal energy, state 2, region 1!')
@@ -526,7 +595,9 @@ class test_ThermodynamicWrapper(unittest.TestCase):
         self.assertEqual(h2o.h(80, 300),  region1.h(80, 300),  'Failed specific enthalpy, state 2, region 1!')
         self.assertEqual(h2o.cp(80, 300), region1.cp(80, 300), 'Failed specific heat capacity, state 2, region 1!')
         self.assertEqual(h2o.cv(80, 300), region1.cv(80, 300), 'Failed specific heat capacity, state 2, region 1!')
-        self.assertEqual(h2o.w(80, 300),  region1.w(80, 300),  'Failed speed of sound, state 1, region 2!')
+        self.assertEqual(h2o.w(80, 300),  region1.w(80, 300),  'Failed speed of sound, state 2, region 1!')
+        self.assertEqual(h2o.a(80, 300),  region1.a(80, 300),  'Failed expansion coefficient, state 2, region 1!')
+        self.assertEqual(h2o.k(80, 300),  region1.k(80, 300),  'Failed compressability, state 2, region 1!')
     def test_ThermodynamicWrapper_Region1_State3(self):
         self.assertEqual(h2o.v(3, 500),  region1.v(3, 500),  'Failed specific volume, state 3, region 1!')
         self.assertEqual(h2o.u(3, 500),  region1.u(3, 500),  'Failed specific internal energy, state 3, region 1!')
@@ -534,7 +605,9 @@ class test_ThermodynamicWrapper(unittest.TestCase):
         self.assertEqual(h2o.h(3, 500),  region1.h(3, 500),  'Failed specific enthalpy, state 3, region 1!')
         self.assertEqual(h2o.cp(3, 500), region1.cp(3, 500), 'Failed specific heat capacity, state 3, region 1!')
         self.assertEqual(h2o.cv(3, 500), region1.cv(3, 500), 'Failed specific heat capacity, state 3, region 1!')
-        self.assertEqual(h2o.w(3, 500),  region1.w(3, 500),  'Failed speed of sound, state 1, region 3!')
+        self.assertEqual(h2o.w(3, 500),  region1.w(3, 500),  'Failed speed of sound, state 3, region 1!')
+        self.assertEqual(h2o.a(3, 500),  region1.a(3, 500),  'Failed expansion coefficient, state 3, region 1!')
+        self.assertEqual(h2o.k(3, 500),  region1.k(3, 500),  'Failed compressability, state 3, region 1!')
     def test_ThermodynamicWrapper_Region2_State1(self):
         self.assertEqual(h2o.v(0.0035, 300),  region2.v(0.0035, 300),  'Failed specific volume, state 1, region 2!')
         self.assertEqual(h2o.u(0.0035, 300),  region2.u(0.0035, 300),  'Failed specific internal energy, state 1, region 2!')
@@ -543,6 +616,8 @@ class test_ThermodynamicWrapper(unittest.TestCase):
         self.assertEqual(h2o.cp(0.0035, 300), region2.cp(0.0035, 300), 'Failed specific heat capacity, state 1, region 2!')
         self.assertEqual(h2o.cv(0.0035, 300), region2.cv(0.0035, 300), 'Failed specific heat capacity, state 1, region 2!')
         self.assertEqual(h2o.w(0.0035, 300),  region2.w(0.0035, 300),  'Failed speed of sound, state 1, region 2!')
+        self.assertEqual(h2o.a(0.0035, 300),  region2.a(0.0035, 300),  'Failed expansion coefficient, state 1, region 2!')
+        self.assertEqual(h2o.k(0.0035, 300),  region2.k(0.0035, 300),  'Failed compressability, state 1, region 2!')
     def test_ThermodynamicWrapper_Region2_State2(self):
         self.assertEqual(h2o.v(0.0035, 700),  region2.v(0.0035, 700),  'Failed specific volume, state 2, region 2!')
         self.assertEqual(h2o.u(0.0035, 700),  region2.u(0.0035, 700),  'Failed specific internal energy, state 2, region 2!')
@@ -551,6 +626,8 @@ class test_ThermodynamicWrapper(unittest.TestCase):
         self.assertEqual(h2o.cp(0.0035, 700), region2.cp(0.0035, 700), 'Failed specific heat capacity, state 2, region 2!')
         self.assertEqual(h2o.cv(0.0035, 700), region2.cv(0.0035, 700), 'Failed specific heat capacity, state 2, region 2!')
         self.assertEqual(h2o.w(0.0035, 700),  region2.w(0.0035, 700),  'Failed speed of sound, state 2, region 2!')
+        self.assertEqual(h2o.a(0.0035, 700),  region2.a(0.0035, 700),  'Failed expansion coefficient, state 2, region 2!')
+        self.assertEqual(h2o.k(0.0035, 700),  region2.k(0.0035, 700),  'Failed compressability, state 2, region 2!')
     def test_ThermodynamicWrapper_Region2_State3(self):
         self.assertEqual(h2o.v(30, 700),  region2.v(30, 700),  'Failed specific volume, state 3, region 2!')
         self.assertEqual(h2o.u(30, 700),  region2.u(30, 700),  'Failed specific internal energy, state 3, region 2!')
@@ -559,6 +636,150 @@ class test_ThermodynamicWrapper(unittest.TestCase):
         self.assertEqual(h2o.cp(30, 700), region2.cp(30, 700), 'Failed specific heat capacity, state 3, region 2!')
         self.assertEqual(h2o.cv(30, 700), region2.cv(30, 700), 'Failed specific heat capacity, state 3, region 2!')
         self.assertEqual(h2o.w(30, 700),  region2.w(30, 700),  'Failed speed of sound, state 3, region 2!')
+        self.assertEqual(h2o.a(30, 700),  region2.a(30, 700),  'Failed expansion coefficient, state 3, region 2!')
+        self.assertEqual(h2o.k(30, 700),  region2.k(30, 700),  'Failed compressability, state 3, region 2!')
+
+class test_ThermodynamicPlots(unittest.TestCase):
+    def test_ThermodynamicPartialP_Plot(self):
+
+        Pfg = numpy.logspace(-3, numpy.log10(h2o.satP(623.14)), 50)
+        P   = numpy.logspace(-3, numpy.log10(50), 100)
+        Ts  = numpy.linspace(273.16, 623.14, 50)
+        Tl  = numpy.linspace(273.16, 1073.14, 50)
+        Tn = [10, 40, 60, 100, 200]
+
+        hf = [h2o.hf(n) for n in Pfg]
+        hg = [h2o.hg(n) for n in Pfg]
+        h  = [[h2o.h(n, 273.16 + i) for n in P] for i in Tn]
+
+        vf = [h2o.vf(n) for n in Pfg]
+        vg = [h2o.vg(n) for n in Pfg]
+        v  = [[h2o.v(n, 273.16 + i) for n in P] for i in Tn]
+
+        uf = [h2o.uf(n) for n in Pfg]
+        ug = [h2o.ug(n) for n in Pfg]
+        u  = [[h2o.u(n, 273.16 + i) for n in P] for i in Tn]
+
+        Tsat = [h2o.satT(n) for n in Pfg]
+        P1 = numpy.array([numpy.linspace(h2o.satP(n), 50, len(Ts)) for n in Ts])
+        T1 = numpy.array([numpy.ones(len(Ts)) * Ts[n] for n in range(len(Ts))])
+        h1 = numpy.array([[h2o.h(P1[j, i], Ts[j], 1) for i in range(len(P1))] for j in range(len(Ts))])
+        v1 = numpy.array([[h2o.v(P1[j, i], Ts[j], 1) for i in range(len(P1))] for j in range(len(Ts))])
+        u1 = numpy.array([[h2o.u(P1[j, i], Ts[j], 1) for i in range(len(P1))] for j in range(len(Ts))])
+        dhdp1 = numpy.array([[h2o.dhdP(P1[j, i], Ts[j], 1) for i in range(len(P1))] for j in range(len(Ts))])
+        dvdp1 = numpy.array([[h2o.dvdP(P1[j, i], Ts[j], 1) for i in range(len(P1))] for j in range(len(Ts))])
+        dudp1 = numpy.array([[h2o.dudP(P1[j, i], Ts[j], 1) for i in range(len(P1))] for j in range(len(Ts))])
+
+        P2 = numpy.array([numpy.linspace(10**-3, (h2o.satP(n) if n <= 623.15 else region3.bnd23P(n)), len(Ts)) for n in Tl])
+        T2 = numpy.array([numpy.ones(len(Ts)) * n for n in Tl])
+        h2 = numpy.array([[h2o.h(P2[j, i], Tl[j], 2) for i in range(len(P2[0]))] for j in range(len(Tl))])
+        v2 = numpy.array([[h2o.v(P2[j, i], Tl[j], 2) for i in range(len(P2[0]))] for j in range(len(Tl))])
+        u2 = numpy.array([[h2o.u(P2[j, i], Tl[j], 2) for i in range(len(P2[0]))] for j in range(len(Tl))])
+        dhdp2 = numpy.array([[h2o.dhdP(P2[j, i], Tl[j], 2) for i in range(len(P2[0]))] for j in range(len(Tl))])
+        dvdp2 = numpy.array([[h2o.dvdP(P2[j, i], Tl[j], 2) for i in range(len(P2[0]))] for j in range(len(Tl))])
+        dudp2 = numpy.array([[h2o.dudP(P2[j, i], Tl[j], 2) for i in range(len(P2[0]))] for j in range(len(Tl))])
+
+        P4 = numpy.array([numpy.ones(len(Pfg)) * Pfg[n] for n in range(len(Pfg))])
+        h4 = numpy.array([numpy.linspace(h2o.hf(n), h2o.hg(n), len(Ts)) for n in Pfg])
+        dhdp4 = numpy.array([[h2o.dhdP_e(Pfg[j], h4[j, i]) for i in range(len(h4))] for j in range(len(Pfg))])
+        v4 = numpy.array([numpy.linspace(h2o.vf(n), h2o.vg(n), len(Ts)) for n in Pfg])
+        dvdp4 = numpy.array([[h2o.dvdP_e(Pfg[j], v4[j, i]) for i in range(len(v4))] for j in range(len(Pfg))])
+        u4 = numpy.array([numpy.linspace(h2o.uf(n), h2o.ug(n), len(Ts)) for n in Pfg])
+        dudp4 = numpy.array([[h2o.dudP_e(Pfg[j], u4[j, i]) for i in range(len(u4))] for j in range(len(Pfg))])
+
+        lvlh = numpy.linspace(-0.150, 0.015, 22+1)
+        lvlh4 = numpy.linspace(-2.5, 50, 22)
+        lvlv = numpy.linspace(-500, 0, 21)
+        lvlu = numpy.linspace(-0.150, 0.00, 16)
+
+        #pyplot.xkcd()
+        matplotlib.rcParams.update({'font.size': 8})
+        clrmp = cm.viridis
+        clrmp.set_under(cm.viridis.colors[0])
+        clrmp.set_over(cm.viridis.colors[-1])
+        clrmp.set_bad(color='black')
+        fig = pyplot.figure(figsize=(13,11))
+
+        pyplot.subplot(321, axisbg='darkgrey')
+        pyplot.semilogy(Tsat, Pfg, 'k')
+        pyplot.contourf(T1, P1, dhdp1, levels=lvlh/15, cmap=clrmp, extend="both")
+        pyplot.contourf(T2[:], P2[:], dhdp2[:], levels=lvlh, cmap=clrmp, extend="both")
+        pyplot.title('Partial derivative of specific enthalpy w.r.t pressure', fontsize=8)
+        pyplot.xlabel('Temperature [K]')
+        pyplot.ylabel('Pressure [MPa]')
+        pyplot.ylim(10**-3, 50)
+        pyplot.text(300, 10, 'scale 1/15th', style='italic')
+
+        pyplot.subplot(322, axisbg='darkgrey')
+        pyplot.loglog(hf, Pfg, 'k', hg, Pfg, 'k')
+        [pyplot.loglog(h[:][i], P, 'b', linewidth=0.70) for i in range(1,5)]
+        pyplot.contourf(h1, P1, dhdp1, levels=lvlh/15, cmap=clrmp, extend="both")
+        pyplot.contourf(h2, P2, dhdp2, levels=lvlh, cmap=clrmp, extend="both")
+        pyplot.colorbar(ticks=lvlh[::4])
+        pyplot.contourf(h4[:], P4[:], dhdp4[:], levels=lvlh4, cmap=clrmp, extend="both")
+        pyplot.colorbar(ticks=lvlh4[1::4])
+        pyplot.title('                    -- (w/ enthalpy @ constant T lines)', fontsize=8)
+        pyplot.xlabel('Specific Enthalpy [kJ / kg]')
+        pyplot.ylabel('Pressure [MPa]')
+        pyplot.xlim(5*10**1, 4*10**3)
+        pyplot.ylim(10**-3, 50)
+        pyplot.text(60, 10, 'scale 1/15th', style='italic')
+        pyplot.text(150, 2e-3, 'scale left only', style='italic')
+
+        pyplot.subplot(323, axisbg='darkgrey')
+        pyplot.semilogy(Tsat, Pfg, 'k')
+        pyplot.contourf(T1, P1, dvdp1, levels=lvlv/15e9, cmap=clrmp, extend="both")
+        pyplot.contourf(T2[:], P2[:], dvdp2[:], levels=lvlv, cmap=clrmp, extend="both")
+        pyplot.title('Partial derivative of specific volume w.r.t pressure', fontsize=8)
+        pyplot.xlabel('Temperature [K]')
+        pyplot.ylabel('Pressure [MPa]')
+        pyplot.ylim(10**-3, 50)
+        pyplot.text(300, 10, 'scale 1/15e9', style='italic')
+
+        pyplot.subplot(324, axisbg='darkgrey')
+        pyplot.loglog(vf, Pfg, 'k', vg, Pfg, 'k')
+        [pyplot.loglog(v[:][i], P, 'b', linewidth=0.70) for i in range(5)]
+        pyplot.contourf(v1, P1, dvdp1, levels=lvlv/15e9, cmap=clrmp, extend="both")
+        pyplot.contourf(v4[:], P4[:], dvdp4[:], levels=lvlv/50, cmap=clrmp, extend="both")
+        pyplot.contourf(v2[:], P2[:], dvdp2[:], levels=lvlv, cmap=clrmp, extend="both")
+        pyplot.colorbar(ticks=lvlv[::4])
+        pyplot.title('                    -- (w/ volume @ constant T lines)', fontsize=8)
+        pyplot.xlabel('Specific volume [m^3 / kg]')
+        pyplot.ylabel('Pressure [MPa]')
+        pyplot.xlim(1*10**-3, 5*10**2)
+        pyplot.ylim(10**-3, 50)
+        pyplot.annotate('scale 1/15e9', xy=(1.25e-3, 15), xycoords='data', xytext=(2.0e-3, 2.5),
+                    textcoords='data', arrowprops=dict(arrowstyle="->", connectionstyle="angle3,angleA=0,angleB=90"))
+        pyplot.text(2.0e-3, 3.0e-3, 'scale 1/50th', style='italic')
+
+        pyplot.subplot(325, axisbg='darkgrey')
+        pyplot.semilogy(Tsat, Pfg, 'k')
+        pyplot.contourf(T1, P1, dudp1, levels=lvlu/20, cmap=clrmp, extend="both")
+        pyplot.contourf(T2[:], P2[:], dudp2[:], levels=lvlu, cmap=clrmp, extend="both")
+        pyplot.title('Partial derivative of specific internal energy w.r.t pressure', fontsize=8)
+        pyplot.xlabel('Temperature [K]')
+        pyplot.ylabel('Pressure [MPa]')
+        pyplot.ylim(10**-3, 50)
+        pyplot.text(300, 10, 'scale 1/20th', style='italic')
+
+        pyplot.subplot(326, axisbg='darkgrey')
+        pyplot.loglog(uf, Pfg, 'k', ug, Pfg, 'k')
+        [pyplot.loglog(u[:][i], P, 'b', linewidth=0.70) for i in range(1,5)]
+        pyplot.contourf(u1, P1, dudp1, levels=lvlu/20, cmap=clrmp, extend="both")
+        pyplot.contourf(u4[:], P4[:], dudp4[:], levels=lvlu*30, cmap=clrmp, extend="both")
+        pyplot.contourf(u2[:], P2[:], dudp2[:], levels=lvlu, cmap=clrmp, extend="both")
+        pyplot.colorbar(ticks=lvlu[::2])
+        pyplot.title('                    --  (w/ int. energy @ constant T lines)', fontsize=8)
+        pyplot.xlabel('Specific Internal Energy [kJ / kg]')
+        pyplot.ylabel('Pressure [MPa]')
+        pyplot.xlim(2*10**1, 3.5*10**3)
+        pyplot.ylim(10**-3, 50)
+        pyplot.text(23, 10, 'scale 1/20th', style='italic')
+        pyplot.text(150, 2e-3, 'scale x30', style='italic')
+
+        fig.tight_layout()
+        #pyplot.show()
+        pyplot.savefig("if97/__testout__/test_PartialP", dpi=300)
 
 if __name__ == '__main__':
     unittest.main()
