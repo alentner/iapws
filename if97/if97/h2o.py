@@ -11,12 +11,12 @@ def idRegion(P, T):
     Pbnd0  = region1.Pbnd0
     Pbnd1  = region1.Pbnd1
     Tbnd01 = region1.Tbnd01
-    Tbnd13 = region1.Tbnd13
     Tbnd25 = region2.Tbnd25
+    Tbnd13 = region1.Tbnd13
 
     # non-constant boundaries
     Pbnd32 = region3.bnd23P(min(max(T, Tbnd13), 863.15))
-    Pbnd4  = satP(T)
+    Pbnd4  = satP(min(max(T, Tbnd01), Tbnd13))
 
     region = 0
 
@@ -44,7 +44,7 @@ def g(P, T, region = 0):
     else:
         return 0.000
 def v(P, T, region = 0):
-    """Specific volume [m^3 / kg K]"""
+    """Specific volume [m^3 / kg]"""
     if region is 0:
         region = idRegion(P, T)
 
@@ -55,7 +55,7 @@ def v(P, T, region = 0):
     else:
         return 0.000
 def u(P, T, region = 0):
-    """Specific internal energy [kJ / kg K]"""
+    """Specific internal energy [kJ / kg]"""
     if region is 0:
         region = idRegion(P, T)
 
@@ -77,7 +77,7 @@ def s(P, T, region = 0):
     else:
         return 0.000
 def h(P, T, region = 0):
-    """Specific enthalpy [kJ / kg K]"""
+    """Specific enthalpy [kJ / kg]"""
     if region is 0:
         region = idRegion(P, T)
 
@@ -192,7 +192,6 @@ def dsdP(P, T, region = 0):
         return region2.dsdP(P, T)
     else:
         return 0.000
-    return -v(P, T) * a(P, T)
 def dhdP(P, T, region = 0):
     """ Derivative of specific enthalpy [kJ m^3 / kg kJ]
     w.r.t pressure at constant temperature"""
@@ -243,7 +242,7 @@ def dudT(P, T, region = 0):
     else:
         return 0.000
 def dsdT(P, T, region = 0):
-    """ Derivative of specific entropy [kJ / kg K]
+    """ Derivative of specific entropy [kJ / kg K K]
     w.r.t temperature at constant pressure"""
     if region is 0:
         region = idRegion(P, T)
@@ -274,30 +273,28 @@ def idRegion_h(P, h):
     """Identification of region from IF97 specification
     using pressure and enthalpy as primary variables"""
 
-    # Constant boundaries
-    Pbnd0  = region1.Pbnd0
-    Pbnd1  = region1.Pbnd1 
+    # supporting boundaries
     Tbnd01 = region1.Tbnd01
-    Tbnd13 = region1.Tbnd13
+    Pbnd4  = satP(Tbnd01)
     Tbnd25 = region2.Tbnd25
-
-    # non-constant boundaries
-    Pbnd4  = satP
-    Tbnd32 = region3.bnd23T
-    Tbnd4  = satT
+    Tbnd13 = region1.Tbnd13
+    Tbnd32 = region3.bnd23T(min(max(P, 16.5292), 100.0))
+    Tbnd4  = satT(P)
 
     # Enthalpy- pressure boundaries
+    Pbnd0  = region1.Pbnd0
+    Pbnd1  = region1.Pbnd1 
+    hbnd01 = region1.h(Pbnd4, Tbnd01)
+    hbnd25 = region2.h(Pbnd0, Tbnd25)
     Pbndh1 = satP(Tbnd13)
-    hbnd01 = region1.h(Pbnd4(Tbnd01), Tbnd01)
-    hbnd40 = region2.h(Pbnd1, Tbnd25)
     hbnd13 = region1.h(P, Tbnd13)
-    hbnd14 = region1.h(P, Tbnd4(P))
-    hbnd42 = region2.h(P, Tbnd4(P))
-    hbnd32 = region2.h(P, Tbnd32(min(max(P, 16.5292), 100.0)))
+    hbnd32 = region2.h(P, Tbnd32)
+    hbnd14 = region1.h(P, Tbnd4)
+    hbnd42 = region2.h(P, Tbnd4)
 
     region = 0
 
-    if (P >= Pbnd0) and (h >= hbnd01) and (P <= Pbnd1) and (h <= hbnd40):
+    if (P >= Pbnd0) and (h >= hbnd01) and (P <= Pbnd1) and (h <= hbnd25):
         if (P >= Pbndh1):
             if (h <= hbnd13):
                 region = 1
@@ -318,7 +315,7 @@ def idRegion_h(P, h):
 
 #### water properties ####
 def g_h(P, h, region = 0):
-    """Specific gibbs free energy [kJ / kg K]"""
+    """Specific gibbs free energy [kJ / kg]"""
     if region is 0:
         region = idRegion_h(P, h)
 
@@ -327,11 +324,11 @@ def g_h(P, h, region = 0):
     elif region is 2:
         return region2.g_h(P, h)
     elif region is 4:
-        return g_e(P, h)
+        return region4.g_h(P, h)
     else:
         return 0.000
 def v_h(P, h, region = 0):
-    """Specific volume [m^3 / kg K]"""
+    """Specific volume [m^3 / kg]"""
     if region is 0:
         region = idRegion_h(P, h)
 
@@ -340,11 +337,11 @@ def v_h(P, h, region = 0):
     elif region is 2:
         return region2.v_h(P, h)
     elif region is 4:
-        return v_e(P, h)
+        return region4.v_h(P, h)
     else:
         return 0.000
 def u_h(P, h, region = 0):
-    """Specific internal energy [kJ / kg K]"""
+    """Specific internal energy [kJ / kg]"""
     if region is 0:
         region = idRegion_h(P, h)
 
@@ -353,7 +350,7 @@ def u_h(P, h, region = 0):
     elif region is 2:
         return region2.u_h(P, h)
     elif region is 4:
-        return u_e(P, h)
+        return region4.u_h(P, h)
     else:
         return 0.000
 def s_h(P, h, region = 0):
@@ -366,7 +363,7 @@ def s_h(P, h, region = 0):
     elif region is 2:
         return region2.s_h(P, h)
     elif region is 4:
-        return s_e(P, h)
+        return region4.s_h(P, h)
     else:
         return 0.000
 def T_h(P, h, region = 0):
@@ -379,7 +376,7 @@ def T_h(P, h, region = 0):
     elif region is 2:
         return region2.T_h(P, h)
     elif region is 4:
-        return satT(P)
+        return region4.satT(P)
     else:
         return 0.000
 def cp_h(P, h, region = 0):
@@ -392,7 +389,7 @@ def cp_h(P, h, region = 0):
     elif region is 2:
         return region2.cp_h(P, h)
     elif region is 4:
-        return cp_e(P, h)
+        return region4.cp_h(P, h)
     else:
         return 0.000
 def cv_h(P, h, region = 0):
@@ -405,7 +402,7 @@ def cv_h(P, h, region = 0):
     elif region is 2:
         return region2.cv_h(P, h)
     elif region is 4:
-        return cv_e(P, h)
+        return region4.cv_h(P, h)
     else:
         return 0.000
 def w_h(P, h, region = 0):
@@ -418,7 +415,7 @@ def w_h(P, h, region = 0):
     elif region is 2:
         return region2.w_h(P, h)
     elif region is 4:
-        return w_e(P, h)
+        return region4.w_h(P, h)
     else:
         return 0.000
 def a_h(P, h, region = 0):
@@ -431,7 +428,7 @@ def a_h(P, h, region = 0):
     elif region is 2:
         return region2.a_h(P, h)
     elif region is 4:
-        return a_e(P, h)
+        return region4.a_h(P, h)
     else:
         return 0.000
 def k_h(P, h, region = 0):
@@ -444,7 +441,7 @@ def k_h(P, h, region = 0):
     elif region is 2:
         return region2.k_h(P, h)
     elif region is 4:
-        return k_e(P, h)
+        return region4.k_h(P, h)
     else:
         return 0.000
 
@@ -460,7 +457,7 @@ def dgdP_h(P, h, region = 0):
     elif region is 2:
         return region2.dgdP_h(P, h)
     elif region is 4:
-        return dgdP_e(P, h)
+        return region4.dgdP_h(P, h)
     else:
         return 0.000
 def dvdP_h(P, h, region = 0):
@@ -474,7 +471,7 @@ def dvdP_h(P, h, region = 0):
     elif region is 2:
         return region2.dvdP_h(P, h)
     elif region is 4:
-        return dvdP_e(P, h)
+        return region4.dvdP_h(P, h)
     else:
         return 0.000
 def dudP_h(P, h, region = 0):
@@ -488,7 +485,7 @@ def dudP_h(P, h, region = 0):
     elif region is 2:
         return region2.dudP_h(P, h)
     elif region is 4:
-        return dudP_e(P, h)
+        return region4.dudP_h(P, h)
     else:
         return 0.000
 def dsdP_h(P, h, region = 0):
@@ -502,13 +499,12 @@ def dsdP_h(P, h, region = 0):
     elif region is 2:
         return region2.dsdP_h(P, h)
     elif region is 4:
-        return dsdP_e(P, h)
+        return region4.dsdP_h(P, h)
     else:
         return 0.000
-    return -v(P, h) * a(P, h)
 def dhdP_h(P, h, region = 0):
     """ Derivative of specific enthalpy [kJ m^3 / kg kJ]
-    w.r.t pressure at constant specific/equilibrium enthalpy"""
+    w.r.t pressure at constant specific enthalpy"""
     if region is 0:
         region = idRegion_h(P, h)
 
@@ -517,12 +513,12 @@ def dhdP_h(P, h, region = 0):
     elif region is 2:
         return 0.000
     elif region is 4:
-        return dhdP_e(P, h)
+        return region4.dhdP_h(P, h)
     else:
         return 0.000
 def dTdP_h(P, h, region = 0):
     """ Derivative of Temperature [K m^3 / kJ]
-    w.r.t pressure at constant enthalpy"""
+    w.r.t pressure at constant specific enthalpy"""
     if region is 0:
         region = idRegion_h(P, h)
 
@@ -536,7 +532,7 @@ def dTdP_h(P, h, region = 0):
         return 0.000
 
 def dgdh_h(P, h, region = 0):
-    """ Derivative of specific gibbs free energy [kJ / kg K]
+    """ Derivative of specific gibbs free energy [kJ kg / kg kJ]
     w.r.t specific enthalpy at constant pressure"""
     if region is 0:
         region = idRegion_h(P, h)
@@ -546,11 +542,11 @@ def dgdh_h(P, h, region = 0):
     elif region is 2:
         return region2.dgdh_h(P, h)
     elif region is 4:
-        return dgdh_e(P, h)
+        return region4.dgdh_h(P, h)
     else:
         return 0.000
 def dvdh_h(P, h, region = 0):
-    """ Derivative of specific volume [m^3 / kg K]
+    """ Derivative of specific volume [m^3 kg / kg kJ]
     w.r.t specific enthalpy at constant pressure"""
     if region is 0:
         region = idRegion_h(P, h)
@@ -560,11 +556,11 @@ def dvdh_h(P, h, region = 0):
     elif region is 2:
         return region2.dvdh_h(P, h)
     elif region is 4:
-        return dvdh_e(P, h)
+        return region4.dvdh_h(P, h)
     else:
         return 0.000
 def dudh_h(P, h, region = 0):
-    """ Derivative of specific internal energy [kJ / kg K]
+    """ Derivative of specific internal energy [kJ kg / kg kJ]
     w.r.t specific enthalpy at constant pressure"""
     if region is 0:
         region = idRegion_h(P, h)
@@ -574,11 +570,11 @@ def dudh_h(P, h, region = 0):
     elif region is 2:
         return region2.dudh_h(P, h)
     elif region is 4:
-        return dudh_e(P, h)
+        return region4.dudh_h(P, h)
     else:
         return 0.000
 def dsdh_h(P, h, region = 0):
-    """ Derivative of specific entropy [kJ / kg K]
+    """ Derivative of specific entropy [kJ kg / kg K kJ]
     w.r.t specific enthalpy at constant pressure"""
     if region is 0:
         region = idRegion_h(P, h)
@@ -588,11 +584,11 @@ def dsdh_h(P, h, region = 0):
     elif region is 2:
         return region2.dsdh_h(P, h)
     elif region is 4:
-        return dsdh_e(P, h)
+        return region4.dsdh_h(P, h)
     else:
         return 0.000
 def dhdh_h(P, h, region = 0):
-    """ Derivative of specific enthalpy [kJ m^3 / kg kJ]
+    """ Derivative of specific enthalpy [kJ kg / kg kJ]
     w.r.t specific enthalpy at constant pressure"""
     if region is 0:
         region = idRegion_h(P, h)
@@ -607,7 +603,7 @@ def dhdh_h(P, h, region = 0):
         return 0.000
 def dTdh_h(P, h, region = 0):
     """ Derivative of Temperature [K kg / kJ]
-    w.r.t enthalpy at constant pressure"""
+    w.r.t specific enthalpy at constant pressure"""
     if region is 0:
         region = idRegion_h(P, h)
 
@@ -615,6 +611,356 @@ def dTdh_h(P, h, region = 0):
         return region1.dTdh_h(P, h)
     elif region is 2:
         return region2.dTdh_h(P, h)
+    elif region is 4:
+        return 0.000
+    else:
+        return 0.000
+
+###########################################################
+#####           Pressure-Entropy Formulation          #####
+###########################################################
+def idRegion_s(P, s):
+    """Identification of region from IF97 specification
+    using pressure and enthalpy as primary variables"""
+
+    # supporting boundaries
+    Tbnd01 = region1.Tbnd01
+    Pbnd4  = satP(Tbnd01)
+    Tbnd25 = region2.Tbnd25
+    Tbnd13 = region1.Tbnd13
+    Tbnd32 = region3.bnd23T(min(max(P, 16.5292), 100.0))
+    Tbnd4  = satT(P)
+
+    # Enthalpy- pressure boundaries
+    Pbnd0  = region1.Pbnd0
+    Pbnd1  = region1.Pbnd1 
+    sbnd01 = region1.s(Pbnd4, Tbnd01)
+    sbnd25 = region2.s(Pbnd0, Tbnd25)
+    Pbndh1 = satP(Tbnd13)
+    sbnd13 = region1.s(P, Tbnd13)
+    sbnd32 = region2.s(P, Tbnd32)
+    sbnd14 = region1.s(P, Tbnd4)
+    sbnd42 = region2.s(P, Tbnd4)
+
+    region = 0
+
+    if (P >= Pbnd0) and (s >= sbnd01) and (P <= Pbnd1) and (s <= sbnd25):
+        if (P >= Pbndh1):
+            if (s <= sbnd13):
+                region = 1
+            elif (s >= sbnd32):
+                region = 2
+            else:
+                # region 3 via P,h relations not implemented
+                region = 0
+        else:
+            if (s <= sbnd14):
+                region = 1
+            elif (s >= sbnd42):
+                region = 2
+            else:
+                region = 4
+    assert (region is not 0), "Water properties not avalable!"
+    return region
+
+#### water properties ####
+def g_s(P, s, region = 0):
+    """Specific gibbs free energy [kJ / kg]"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.g_s(P, s)
+    elif region is 2:
+        return region2.g_s(P, s)
+    elif region is 4:
+        return region4.g_s(P, s)
+    else:
+        return 0.000
+def v_s(P, s, region = 0):
+    """Specific volume [m^3 / kg]"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.v_s(P, s)
+    elif region is 2:
+        return region2.v_s(P, s)
+    elif region is 4:
+        return region4.v_s(P, s)
+    else:
+        return 0.000
+def u_s(P, s, region = 0):
+    """Specific internal energy [kJ / kg]"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.u_s(P, s)
+    elif region is 2:
+        return region2.u_s(P, s)
+    elif region is 4:
+        return region4.u_s(P, s)
+    else:
+        return 0.000
+def T_s(P, s, region = 0):
+    """ Temperature [K]"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.T_s(P, s)
+    elif region is 2:
+        return region2.T_s(P, s)
+    elif region is 4:
+        return region4.satT(P)
+    else:
+        return 0.000
+def h_s(P, s, region = 0):
+    """Specific entropy [kJ / kg]"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.h_s(P, s)
+    elif region is 2:
+        return region2.h_s(P, s)
+    elif region is 4:
+        return region4.h_s(P, s)
+    else:
+        return 0.000
+def cp_s(P, s, region = 0):
+    """ Specific isobaric heat capacity [kJ / kg K]"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.cp_s(P, s)
+    elif region is 2:
+        return region2.cp_s(P, s)
+    elif region is 4:
+        return region4.cp_s(P, s)
+    else:
+        return 0.000
+def cv_s(P, s, region = 0):
+    """ Specific isochoric heat capacity [kJ / kg K]"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.cv_s(P, s)
+    elif region is 2:
+        return region2.cv_s(P, s)
+    elif region is 4:
+        return region4.cv_s(P, s)
+    else:
+        return 0.000
+def w_s(P, s, region = 0):
+    """ Speed of sound [m / s]"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.w_s(P, s)
+    elif region is 2:
+        return region2.w_s(P, s)
+    elif region is 4:
+        return region4.w_s(P, s)
+    else:
+        return 0.000
+def a_s(P, s, region = 0):
+    """Isobaric cubic expansion coefficient [1 / K]"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.a_s(P, s)
+    elif region is 2:
+        return region2.a_s(P, s)
+    elif region is 4:
+        return region4.a_s(P, s)
+    else:
+        return 0.000
+def k_s(P, s, region = 0):
+    """Isothermal compressibility [kg / kJ]"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.k_s(P, s)
+    elif region is 2:
+        return region2.k_s(P, s)
+    elif region is 4:
+        return region4.k_s(P, s)
+    else:
+        return 0.000
+
+#### water property derivatives ####
+def dgdP_s(P, s, region = 0):
+    """ Derivative of specific gibbs free energy [kJ m^3 / kg kJ]
+    w.r.t pressure at constant specific entropy"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.dgdP_s(P, s)
+    elif region is 2:
+        return region2.dgdP_s(P, s)
+    elif region is 4:
+        return region4.dgdP_s(P, s)
+    else:
+        return 0.000
+def dvdP_s(P, s, region = 0):
+    """ Derivative of specific volume [m^3 m^3 / kg kJ]
+    w.r.t pressure at constant specific entropy"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.dvdP_s(P, s)
+    elif region is 2:
+        return region2.dvdP_s(P, s)
+    elif region is 4:
+        return region4.dvdP_s(P, s)
+    else:
+        return 0.000
+def dudP_s(P, s, region = 0):
+    """ Derivative of specific internal energy [kJ m^3 / kg kJ]
+    w.r.t pressure at constant specific entropy"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.dudP_s(P, s)
+    elif region is 2:
+        return region2.dudP_s(P, s)
+    elif region is 4:
+        return region4.dudP_s(P, s)
+    else:
+        return 0.000
+def dsdP_s(P, s, region = 0):
+    """ Derivative of specific entropy [kJ m^3 / kg K kJ]
+    w.r.t pressure at constant specific/equilibrium entropy"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return 0.000
+    elif region is 2:
+        return 0.000
+    elif region is 4:
+        return region4.dsdP_s(P, s)
+    else:
+        return 0.000
+def dhdP_s(P, s, region = 0):
+    """ Derivative of specific enthalpy [kJ m^3 / kg kJ]
+    w.r.t pressure at constant specific entropy"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.dhdP_s(P, s)
+    elif region is 2:
+        return region2.dhdP_s(P, s)
+    elif region is 4:
+        return region4.dhdP_s(P, s)
+    else:
+        return 0.000
+def dTdP_s(P, s, region = 0):
+    """ Derivative of Temperature [K m^3 / kJ]
+    w.r.t pressure at constant specific entropy"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.dTdP_s(P, s)
+    elif region is 2:
+        return region2.dTdP_s(P, s)
+    elif region is 4:
+        return region4.dTsdP(P)
+    else:
+        return 0.000
+
+def dgds_s(P, s, region = 0):
+    """ Derivative of specific gibbs free energy [kJ kg K / kg kJ]
+    w.r.t specific entropy at constant pressure"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.dgds_s(P, s)
+    elif region is 2:
+        return region2.dgds_s(P, s)
+    elif region is 4:
+        return region4.dgds_s(P, s)
+    else:
+        return 0.000
+def dvds_s(P, s, region = 0):
+    """ Derivative of specific volume [m^3 kg K / kg kJ]
+    w.r.t specific entropy at constant pressure"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.dvds_s(P, s)
+    elif region is 2:
+        return region2.dvds_s(P, s)
+    elif region is 4:
+        return region4.dvds_s(P, s)
+    else:
+        return 0.000
+def duds_s(P, s, region = 0):
+    """ Derivative of specific internal energy [kJ kg K / kg kJ]
+    w.r.t specific entropy at constant pressure"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.duds_s(P, s)
+    elif region is 2:
+        return region2.duds_s(P, s)
+    elif region is 4:
+        return region4.duds_s(P, s)
+    else:
+        return 0.000
+def dsds_s(P, s, region = 0):
+    """ Derivative of specific entropy [kJ kg K / kg K kJ]
+    w.r.t specific entropy at constant pressure"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return 1.000
+    elif region is 2:
+        return 1.000
+    elif region is 4:
+        return 1.000
+    else:
+        return 0.000
+def dhds_s(P, s, region = 0):
+    """ Derivative of specific enthalpy [kJ kg K / kg kJ]
+    w.r.t specific entropy at constant pressure"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.dhds_s(P, s)
+    elif region is 2:
+        return region2.dhds_s(P, s)
+    elif region is 4:
+        return region3.dhds_s(P, s)
+    else:
+        return 0.000
+def dTds_s(P, s, region = 0):
+    """ Derivative of Temperature [K kg K / kJ]
+    w.r.t enthalpy at constant pressure"""
+    if region is 0:
+        region = idRegion_s(P, s)
+
+    if region is 1:
+        return region1.dTds_s(P, s)
+    elif region is 2:
+        return region2.dTds_s(P, s)
     elif region is 4:
         return 0.000
     else:
@@ -641,367 +987,234 @@ def gf(P):
     """ Specific gibbs free energy [kJ / kg]
     of saturated liquid"""
 
-    return region1.g(P, satT(P))
+    return region4.gf(P)
 def vf(P):
     """ Specific volume [m^3 / kg]
     of saturated liquid"""
 
-    return region1.v(P, satT(P))
+    return region4.vf(P)
 def uf(P):
     """ Specific internal energy [kJ / kg]
     of saturated liquid"""
 
-    return region1.u(P, satT(P))
+    return region4.uf(P)
 def sf(P):
     """ Specific entropy [kJ / kg K]
     of saturated liquid"""
 
-    return region1.s(P, satT(P))
+    return region4.sf(P)
 def hf(P):
     """ Specific enthalpy [kJ / kg]
     of saturated liquid"""
 
-    return region1.h(P, satT(P))
+    return region4.hf(P)
 def cpf(P):
     """ Specific isobaric heat capacity [kJ / kg K]
     of saturated liquid"""
 
-    return region1.cp(P, satT(P))
+    return region4.cpf(P)
 def cvf(P):
     """ Specific isochoric heat capacity [kJ / kg K]
     of saturated liquid"""
 
-    return region1.cv(P, satT(P))
+    return region4.cvf(P)
 def wf(P):
     """ Speed of sound [m / s]
     of saturated liquid"""
 
-    return region1.w(P, satT(P))
+    return region4.wf(P)
 def af(P):
     """Isobaric cubic expansion coefficient [1 / K]
     of saturated liquid"""
 
-    return region1.a(P, satT(P))
+    return region4.af(P)
 def kf(P):
     """Isothermal compressibility [kg / kJ]
     of saturated liquid"""
 
-    return region1.k(P, satT(P))
+    return region4.kf(P)
 
 #### Saturated vapor properties ####
 def gg(P):
     """ Specific gibbs free energy [kJ / kg]
     of saturated vapor"""
 
-    return region2.g(P, satT(P))
+    return region4.gg(P)
 def vg(P):
     """ Specific volume [m^3 / kg]
     of saturated vapor"""
 
-    return region2.v(P, satT(P))
+    return region4.vg(P)
 def ug(P):
     """ Specific internal energy [kJ / kg]
     of saturated vapor"""
     
-    return region2.u(P, satT(P))
+    return region4.ug(P)
 def sg(P):
     """ Specific entropy [kJ / kg K]
     of saturated vapor"""
 
-    return region2.s(P, satT(P))
+    return region4.sg(P)
 def hg(P):
     """ Specific enthalpy [kJ / kg]
     of saturated vapor"""
     
-    return region2.h(P, satT(P))
+    return region4.hg(P)
 def cpg(P):
     """ Specific isobaric heat capacity [kJ / kg K]
     of saturated vapor"""
 
-    return region2.cp(P, satT(P))
+    return region4.cpg(P)
 def cvg(P):
     """ Specific isochoric heat capacity [kJ / kg K]
     of saturated vapor"""
 
-    return region2.cv(P, satT(P))
+    return region4.cvg(P)
 def wg(P):
     """ Speed of sound [m / s]
     of saturated vapor"""
 
-    return region2.w(P, satT(P))
+    return region4.wg(P)
 def ag(P):
     """Isobaric cubic expansion coefficient [1 / K]
     of saturated vapor"""
 
-    return region2.a(P, satT(P))
+    return region4.ag(P)
 def kg(P):
     """Isothermal compressibility [kg / kJ]
     of saturated vapor"""
 
-    return region2.k(P, satT(P))
+    return region4.kg(P)
 
 #### delta saturation properties ####
 def gfg(P):
     """ Specific gibbs free energy; [kJ / kg]
     saturation rise of"""
 
-    return gg(P) - gf(P)
+    return region4.gfg(P)
 def vfg(P):
     """ Specific volume; [m^3 / kg]
     saturation rise of"""
 
-    return vg(P) - vf(P)
+    return region4.vfg(P)
 def ufg(P):
     """ Specific internal energy; [kJ / kg]
     saturation rise of"""
 
-    return ug(P) - uf(P)
+    return region4.ufg(P)
 def sfg(P):
     """ Specific entropy; [kJ / kg K]
     saturation rise of"""
 
-    return sg(P) - sf(P)
+    return region4.sfg(P)
 def hfg(P):
     """ Specific enthalpy; [kJ / kg]
     saturation rise of"""
 
-    return hg(P) - hf(P)
+    return region4.hfg(P)
 def cpfg(P):
     """ Specific isobaric heat capacity; [kJ / kg K]
     saturation rise of"""
 
-    return cpg(P) - cpf(P)
+    return region4.cpfg(P)
 def cvfg(P):
     """ Specific isochoric heat capacity; [kJ / kg K]
     saturation rise of"""
 
-    return cvg(P) - cvf(P)
+    return region4.cvfg(P)
 def wfg(P):
     """ Speed of sound; [m / s]
     saturation rise of"""
 
-    return wg(P) - wf(P)
+    return region4.wfg(P)
 def afg(P):
     """Isobaric cubic expansion coefficient; [1 / K]
     saturation rise of"""
 
-    return ag(P) - af(P)
+    return region4.afg(P)
 def kfg(P):
     """Isothermal compressibility; [kg / kJ]
     saturation rise of"""
 
-    return kg(P) - kf(P)
+    return region4.kfg(P)
 
 #### Saturated liquid derivatives ####
 def dgfdP(P):
     """ Derivative of Specific gibbs free energy [kJ m^3 / kg kJ]
     of saturated liquid w.r.t. pressure"""
-    T = satT(P)
 
-    return region1.dgdP(P, T) + region1.dgdT(P, T) * region4.dTsdP(P)
+    return region4.dgfdP(P)
 def dvfdP(P):
     """ Derivative of Specific volume [m^3 m^3 / kg kJ]
     of saturated liquid w.r.t. pressure"""
-    T = satT(P)
 
-    return region1.dvdP(P, T) + region1.dvdT(P, T) * region4.dTsdP(P)
+    return region4.dvfdP(P)
 def dufdP(P):
     """ Derivative of Specific internal energy [kJ m^3 / kg kJ]
     of saturated liquid w.r.t. pressure"""
-    T = satT(P)
 
-    return region1.dudP(P, T) + region1.dudT(P, T) * region4.dTsdP(P)
+    return region4.dufdP(P)
 def dsfdP(P):
     """ Derivative of Specific entropy [kJ m^3 / kg K kJ]
     of saturated liquid w.r.t. pressure"""
-    T = satT(P)
 
-    return region1.dsdP(P, T) + region1.dsdT(P, T) * region4.dTsdP(P)
+    return region4.dsfdP(P)
 def dhfdP(P):
     """ Derivative of Specific enthalpy [kJ m^3 / kg kJ]
     of saturated liquid w.r.t. pressure"""
-    T = satT(P)
 
-    return region1.dhdP(P, T) + region1.dhdT(P, T) * region4.dTsdP(P)
+    return region4.dhfdP(P)
 
 #### Saturated vapor derivatives ####
 def dggdP(P):
     """ Derivative of Specific gibbs free energy [kJ m^3 / kg kJ]
     of saturated vapor w.r.t. pressure"""
-    T = satT(P)
 
-    return region2.dgdP(P, T) + region2.dgdT(P, T) * region4.dTsdP(P)
+    return region4.dggdP(P)
 def dvgdP(P):
     """ Derivative of Specific volume [m^3 m^3 / kg kJ]
     of saturated vapor w.r.t. pressure"""
-    T = satT(P)
 
-    return region2.dvdP(P, T) + region2.dvdT(P, T) * region4.dTsdP(P)
+    return region4.dvgdP(P)
 def dugdP(P):
     """ Derivative of Specific internal energy [kJ m^3 / kg kJ]
     of saturated vapor w.r.t. pressure"""
-    T = satT(P)
 
-    return region2.dudP(P, T) + region2.dudT(P, T) * region4.dTsdP(P)
+    return region4.dugdP(P)
 def dsgdP(P):
     """ Derivative of Specific entropy [kJ m^3 / kg K kJ]
     of saturated vapor w.r.t. pressure"""
-    T = satT(P)
 
-    return region2.dsdP(P, T) + region2.dsdT(P, T) * region4.dTsdP(P)
+    return region4.dsgdP(P)
 def dhgdP(P):
     """ Derivative of Specific enthalpy [kJ m^3 / kg kJ]
     of saturated vapor w.r.t. pressure"""
-    T = satT(P)
 
-    return region2.dhdP(P, T) + region2.dhdT(P, T) * region4.dTsdP(P)
+    return region4.dhgdP(P)
 
 #### Delta saturation derivatives ####
 def dgfgdP(P):
     """ Derivative of Specific gibbs free energy [kJ m^3 / kg kJ]
     w.r.t. pressure; saturation rise of"""
 
-    return dggdP(P) - dgfdP(P)
+    return region4.dgfgdP(P)
 def dvfgdP(P):
     """ Derivative of Specific volume [m^3 m^3 / kg kJ]
     w.r.t. pressure; saturation rise of"""
 
-    return dvgdP(P) - dvfdP(P)
+    return region4.dvfgdP(P)
 def dufgdP(P):
     """ Derivative of Specific internal energy [kJ m^3 / kg kJ]
     w.r.t. pressure; saturation rise of"""
 
-    return dugdP(P) - dufdP(P)
+    return region4.dufgdP(P)
 def dsfgdP(P):
     """ Derivative of Specific entropy [kJ m^3 / kg K kJ]
     w.r.t. pressure; saturation rise of"""
 
-    return dsgdP(P) - dsfdP(P)
+    return region4.dsfgdP(P)
 def dhfgdP(P):
     """ Derivative of Specific enthalpy [kJ m^3 / kg kJ]
     w.r.t. pressure; saturation rise of"""
 
-    return dhgdP(P) - dhfdP(P)
-
-###########################################################
-#####    Two-phase Mixture (Saturation)   Properties  #####
-###########################################################
-
-#### equilibrium quantities ####
-def g_e(P, h):
-    """ Equilibrium specific gibbs free energy [kJ / kg]"""
-    x = x_e(P, h)
-
-    return x * gg(P) + (1 - x) * gf(P)
-def v_e(P, h):
-    """ Equilibrium specific volume [m^3 / kg]"""
-    x = x_e(P, h)
-
-    return x * vg(P) + (1 - x) * vf(P)
-def u_e(P, h):
-    """ Equilibrium specific internal energy [kJ / kg]"""
-    x = x_e(P, h)
-
-    return x * ug(P) + (1 - x) * uf(P)
-def s_e(P, h):
-    """ Equilibrium specific entropy [kJ / kg K]"""
-    x = x_e(P, h)
-
-    return x * sg(P) + (1 - x) * sf(P)
-def x_e(P, h):
-    """ Equilibrium quality [-]
-    as a function of P, h"""
-
-    return (h - hf(P)) / hfg(P)
-def cp_e(P, h):
-    """ Equilibrium specific isobaric heat capacity [kJ / kg K]"""
-    x = x_e(P, h)
-
-    return x * cpg(P) + (1 - x) * cpf(P)
-def cv_e(P, h):
-    """ Equilibrium specific isochoric heat capacity [kJ / kg K]"""
-    x = x_e(P, h)
-
-    return x * cvg(P) + (1 - x) * cvf(P)
-def w_e(P, h):
-    """ Equilibrium speed of sound [m / s]"""
-    x = x_e(P, h)
-
-    return x * wg(P) + (1 - x) * wf(P)
-def a_e(P, h):
-    """ Equilibrium Isobaric cubic expansion coefficient [1 / K]"""
-    x = x_e(P, h)
-
-    return x * ag(P) + (1 - x) * af(P)
-def k_e(P, h):
-    """ Equilibrium Isothermal compressibility [kg / kJ]"""
-    x = x_e(P, h)
-
-    return x * kg(P) + (1 - x) * kf(P)
-def h_e(P, x):
-    """ Equilibrium specific enthaply [kJ / kg]"""
-
-    return x * hg(P) + (1 - x) * hf(P)
-
-#### equilibrium derivatives ####
-def dgdP_e(P, h):
-    """ Derivative of equilibrium specific gibbs free energy [kJ m^3 / kg kJ]
-    w.r.t. pressure @ a given equilibrium enthalpy"""
-    x = x_e(P, h)
-
-    return x * dggdP(P) + (1 - x) * dgfdP(P) + gfg(P) * dxdP_e(P, h)
-def dvdP_e(P, h):
-    """ Derivative of equilibrium specific volume [m^3 m^3 / kg kJ]
-    w.r.t. pressure @ a given equilibrium enthalpy"""
-    x = x_e(P, h)
-
-    return x * dvgdP(P) + (1 - x) * dvfdP(P) + vfg(P) * dxdP_e(P, h)
-def dudP_e(P, h):
-    """ Equilibrium specific internal energy [kJ m^3 / kg kJ]
-    w.r.t. pressure @ a given equilibrium enthalpy"""
-    x = x_e(P, h)
-
-    return x * dugdP(P) + (1 - x) * dufdP(P) + ufg(P) * dxdP_e(P, h)
-def dsdP_e(P, h):
-    """ Derivative of equilibrium specific entropy [kJ m^3 / kg K kJ]
-    w.r.t. pressure @ a given equilibrium enthalpy"""
-    x = x_e(P, h)
-
-    return x * dsgdP(P) + (1 - x) * dsfdP(P) + sfg(P) * dxdP_e(P, h)
-def dxdP_e(P, h):
-    """ Derivative of equilibrium quality [m^3 / kJ]
-    w.r.t. pressure"""
-
-    return (dhfgdP(P) * (hf(P) - h) - dhfdP(P) * hfg(P)) / hfg(P)**2
-def dhdP_e(P, h):
-    """ Derivative of equilibrium specific enthalpy [kJ m^3 / kg kJ]
-    w.r.t. pressure @ a given equilibrium enthalpy"""
-    x = x_e(P, h)
-
-    return x * dhgdP(P) + (1 - x) * dhfdP(P) + dxdP_e(P, h) * dhfgdP(P)
-
-def dgdh_e(P, h):
-    """ Derivative of equilibrium specific gibbs free energy [kJ kg / kg kJ]
-    w.r.t. equilibrium enthalpy @ a given pressure"""
-
-    return gfg(P) * dxdh_e(P)
-def dvdh_e(P, h):
-    """ Derivative of equilibrium specific volume [m^3 kg / kg kJ]
-    w.r.t. equilibrium enthalpy @ a given pressure"""
-
-    return vfg(P) * dxdh_e(P)
-def dudh_e(P, h):
-    """ Equilibrium specific internal energy [kJ kg / kg kJ]
-    w.r.t. equilibrium enthalpy @ a given pressure"""
-
-    return ufg(P) * dxdh_e(P)
-def dsdh_e(P, h):
-    """ Derivative of equilibrium specific entropy [kJ kg / kg K kJ]
-    w.r.t. equilibrium enthalpy @ a given pressure"""
-
-    return sfg(P) * dxdh_e(P)
-def dxdh_e(P):
-    """ Derivative of equilibrium quality [kg / kJ]
-    w.r.t. equilibrium enthalpy @ a given pressure"""
-
-    return 1 / hfg(P)
+    return region4.dhfgdP(P)

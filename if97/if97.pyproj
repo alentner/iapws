@@ -25,6 +25,7 @@
     <Compile Include="if97\h2o.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="if97\moody.py" />
     <Compile Include="if97\region1.py" />
     <Compile Include="if97\region2.py">
       <SubType>Code</SubType>
@@ -42,16 +43,7 @@
     <Compile Include="if97\__init__.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="if97\__pycache__\h2o.cpython-36.pyc" />
-    <Content Include="if97\__pycache__\region1.cpython-36.pyc" />
-    <Content Include="if97\__pycache__\region1_ext.cpython-36.pyc" />
-    <Content Include="if97\__pycache__\region2.cpython-36.pyc" />
-    <Content Include="if97\__pycache__\region2_ext.cpython-36.pyc" />
-    <Content Include="if97\__pycache__\region3.cpython-36.pyc" />
-    <Content Include="if97\__pycache__\region4.cpython-36.pyc" />
-    <Content Include="if97\__pycache__\region4_ext.cpython-36.pyc" />
-    <Content Include="if97\__pycache__\test.cpython-36.pyc" />
-    <Content Include="if97\__pycache__\__init__.cpython-36.pyc" />
+    <Content Include="if97\__testout__\test_moody.png" />
     <Content Include="if97\__testout__\test_PartialP.png" />
     <Content Include="license.txt" />
     <Content Include="manifest.in" />
@@ -59,7 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="if97\" />
-    <Folder Include="if97\__pycache__\" />
     <Folder Include="if97\__testout__\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

@@ -1,4 +1,9 @@
-# Constants for region 1
+###########################################################
+#####       Constants and Dimensionless Functions     #####
+###########################################################
+
+# constants and non-dimenionalization;
+# Region 1, forwards equations for (P, T)
 I = [ 0,  0, 0, 0, 0, 0, 0, 0,  1,  1,  1, 1, 1, 1,  2, 2, 2, 2,  2,  3, 3, 3,  4,  4,  4,  5,   8,  8,  21,  23,  29,  30,  31,  32]
 J = [ -2, -1, 0, 1, 2, 3, 4, 5, -9, -7, -1, 0, 1, 3, -3, 0, 1, 3, 17, -4, 0, 6, -5, -2, 10, -8, -11, -6, -29, -31, -38, -39, -40, -41]
 n = [ 0.14632971213167,     -0.84548187169114,    -0.37563603672040e1,    0.33855169168385e1,  -0.95791963387872,     0.15772038513228,    
@@ -7,25 +12,38 @@ n = [ 0.14632971213167,     -0.84548187169114,    -0.37563603672040e1,    0.3385
      -0.72694996297594e-15, -0.31679644845054e-4, -0.28270797985312e-5,  -0.85205128120103e-9, -0.22425281908000e-5, -0.65171222895601e-6, 
      -0.14341729937924e-12, -0.40516996860117e-6, -0.12734301741641e-8,  -0.17424871230634e-9, -0.68762131295531e-18, 0.14478307828521e-19, 
       0.26335781662795e-22, -0.11947622640071e-22, 0.18228094581404e-23, -0.93537087292458e-25]
-Ib = [0, 0, 0, 0,  0,  0, 1, 1, 1, 1, 1,  1,  1,  2,  2,  3,  3,  4,  5,  6]
-Jb = [0, 1, 2, 6, 22, 32, 0, 1, 2, 3, 4, 10, 32, 10, 32, 10, 32, 32, 32, 32]
-nb = [-0.23872489924521e3,    0.40421188637945e3,   0.11349746881718e3, -0.58457616048039e1, -0.15285482413140e-3,  -0.10866707695377e-5,
-     -0.13391744872602e2,    0.43211039183559e2,  -0.54010067170506e2,  0.30535892203916e2, -0.65964749423638e1,    0.93965400878363e-2,
-      0.11573647505340e-6,  -0.25858641282073e-4, -0.40644363084799e-8, 0.66456186191635e-7, 0.80670734103027e-10, -0.93477771213947e-12,
-      0.58265442020601e-14, -0.15020185953503e-16]
-
-# Non-dimenionalization for region 1
 Ps = 16.53      #[Mpa]
 Ts = 1386.0     #[K]
 R  = 0.461526   #[kJ / kg K]
-Pb = 1.0        #[Mpa]
-Tb = 1.0        #[K]
-hb = 2500       #[kJ / kg]
 
-# Boundaries defining region 1
-Tbnd01 = 273.15     #[K]
+# constants and non-dimenionalization;
+# Region 1, backwards equations for (P, h)
+I_bh = [0, 0, 0, 0,  0,  0, 1, 1, 1, 1, 1,  1,  1,  2,  2,  3,  3,  4,  5,  6]
+J_bh = [0, 1, 2, 6, 22, 32, 0, 1, 2, 3, 4, 10, 32, 10, 32, 10, 32, 32, 32, 32]
+n_bh = [-0.23872489924521e3,    0.40421188637945e3,   0.11349746881718e3, -0.58457616048039e1, -0.15285482413140e-3,  -0.10866707695377e-5,
+      -0.13391744872602e2,    0.43211039183559e2,  -0.54010067170506e2,  0.30535892203916e2, -0.65964749423638e1,    0.93965400878363e-2,
+       0.11573647505340e-6,  -0.25858641282073e-4, -0.40644363084799e-8, 0.66456186191635e-7, 0.80670734103027e-10, -0.93477771213947e-12,
+       0.58265442020601e-14, -0.15020185953503e-16]
+Ps_bh = 1.0        #[Mpa]
+Ts_bh = 1.0        #[K]
+hs_bh = 2500       #[kJ / kg]
+
+# constants and non-dimenionalization;
+# Region 1, backwards equations for (P, s)
+I_bs = [0, 0, 0, 0,  0,  0, 1, 1, 1, 1,  1,  1, 2, 2, 2, 2,  2,  3,  3,  4]
+J_bs = [0, 1, 2, 3, 11, 31, 0, 1, 2, 3, 12, 31, 0, 1, 2, 9, 31, 10, 32, 32]
+n_bs = [ 0.17478268058307e3,    0.34806930892873e2,  0.65292584978455e1,   0.33039981775489,    -0.19281382923196e-6, -0.24909197244573e-22,
+      -0.26107636489332,      0.22592965981586,   -0.64256463395226e-1,  0.78876289270526e-2,  0.35672110607366e-9,  0.17332496994895e-23,
+       0.56608900654837e-3,  -0.32635483139717e-3, 0.44778286690632e-4, -0.51322156908507e-9, -0.42522657042207e-25, 0.26400441360689e-12,
+       0.78124600459723e-28, -0.30732199903668e-30]
+Ps_bs = 1.0        #[Mpa]
+Ts_bs = 1.0        #[K]
+ss_bs = 1.0        #[kJ / kg K]
+
+# boundaries defining Region 1
+Tbnd01 = 273.16     #[K]
 Tbnd13 = 623.15     #[K]
-Pbnd0  = 0.0        #[MPa]
+Pbnd0  = 1.0e-6     #[MPa]
 Pbnd1  = 100        #[MPa]
 
 #### dimensionless functions ####
@@ -75,12 +93,17 @@ def gamma_pitau(pi, tau):
     for Ii, Ji, ni in zip(I, J, n):
         sum += -ni * Ii * (7.1 - pi)**(Ii - 1) * Ji * (tau - 1.222)**(Ji - 1)
     return sum
-def theta(pi, eta):
+def theta_T(pi, eta):
     """ Dimensionless form for the temperature as a function of pressure and enthalpy"""
-    pib = pi * Ps / Pb
     sum = 0
-    for Ii, Ji, ni in zip(Ib, Jb, nb):
-        sum += ni * pib**Ii * (eta + 1.0)**Ji
+    for Ii, Ji, ni in zip(I_bh, J_bh, n_bh):
+        sum += ni * pi**Ii * (eta + 1.0)**Ji
+    return sum
+def theta_s(pi, sigma):
+    """ Dimensionless form for the temperature as a function of pressure and entropy"""
+    sum = 0
+    for Ii, Ji, ni in zip(I_bs, J_bs, n_bs):
+        sum += ni * pi**Ii * (sigma + 2.0)**Ji
     return sum
 
 ###########################################################
@@ -225,10 +248,10 @@ def s_h(P, h):
     return s(P, T_h(P, h))
 def T_h(P, h):
     """ Temperature [K]"""
-    pi = P / Ps
-    eta = h / hb
+    pi = P / Ps_bh
+    eta = h / hs_bh
 
-    return theta(pi, eta) * Tb
+    return theta_T(pi, eta) * Ts_bh
 def cp_h(P, h):
     """ Specific isobaric heat capacity [kJ / kg K]"""
 
@@ -253,62 +276,173 @@ def k_h(P, h):
 #### region 1 property derivatives ####
 def dgdP_h(P, h):
     """ Derivative of specific gibbs free energy [kJ m^3 / kg kJ]
-    w.r.t pressure at constant enthalpy"""
+    w.r.t pressure at constant specific enthalpy"""
     T = T_h(P, h)
 
     return (dgdP(P, T) * dhdT(P, T) - dgdT(P, T) * dhdP(P, T)) / dhdT(P, T)
 def dvdP_h(P, h):
     """ Derivative of specific volume [m^3 m^3 / kg kJ]
-    w.r.t pressure at constant enthalpy"""
+    w.r.t pressure at constant specific enthalpy"""
     T = T_h(P, h)
 
     return (dvdP(P, T) * dhdT(P, T) - dvdT(P, T) * dhdP(P, T)) / dhdT(P, T)
 def dudP_h(P, h):
     """ Derivative of specific internal energy [kJ m^3 / kg kJ]
-    w.r.t pressure at constant enthalpy"""
+    w.r.t pressure at constant specific enthalpy"""
     T = T_h(P, h)
 
     return (dudP(P, T) * dhdT(P, T) - dudT(P, T) * dhdP(P, T)) / dhdT(P, T)
 def dsdP_h(P, h):
-    """ Derivative of specific entropy [kJ m^3 / kg kJ]
-    w.r.t pressure at constant enthalpy"""
+    """ Derivative of specific entropy [kJ m^3 / kg K kJ]
+    w.r.t pressure at constant specific enthalpy"""
     T = T_h(P, h)
 
     return (dsdP(P, T) * dhdT(P, T) - dsdT(P, T) * dhdP(P, T)) / dhdT(P, T)
 def dTdP_h(P, h):
     """ Derivative of Temperature [K m^3 / kJ]
-    w.r.t pressure at constant enthalpy"""
+    w.r.t pressure at constant specific enthalpy"""
     T = T_h(P, h)
 
     return -dhdP(P, T) / dhdT(P, T)
 
 def dgdh_h(P, h):
     """ Derivative of specific gibbs free energy [kJ kg / kg kJ]
-    w.r.t enthalpy at constant pressure"""
+    w.r.t specific enthalpy at constant pressure"""
     T = T_h(P, h)
 
     return dgdT(P, T) / dhdT(P, T)
 def dvdh_h(P, h):
     """ Derivative of specific volume [m^3 kg / kg kJ]
-    w.r.t enthalpy at constant pressure"""
+    w.r.t specific enthalpy at constant pressure"""
     T = T_h(P, h)
 
     return dvdT(P, T) / dhdT(P, T)
 def dudh_h(P, h):
     """ Derivative of specific internal energy [kJ kg / kg kJ]
-    w.r.t enthalpy at constant pressure"""
+    w.r.t specific enthalpy at constant pressure"""
     T = T_h(P, h)
 
-    return dvdT(P, T) / dhdT(P, T)
+    return dudT(P, T) / dhdT(P, T)
 def dsdh_h(P, h):
-    """ Derivative of specific entropy [kJ kg / kg kJ]
-    w.r.t enthalpy at constant pressure"""
+    """ Derivative of specific entropy [kJ kg / kg K kJ]
+    w.r.t specific enthalpy at constant pressure"""
     T = T_h(P, h)
 
-    return dvdT(P, T) / dhdT(P, T)
+    return dsdT(P, T) / dhdT(P, T)
 def dTdh_h(P, h):
     """ Derivative of Temperature [K kg / kJ]
-    w.r.t enthalpy at constant pressure"""
+    w.r.t specific enthalpy at constant pressure"""
     T = T_h(P, h)
 
     return 1 / dhdT(P, T)
+
+###########################################################
+#####           Pressure-Entropy Formulation          #####
+###########################################################
+
+#### region 1 properties ####
+def g_s(P, s):
+    """ Specific gibbs free energy [kJ / kg]"""
+
+    return g(P, T_s(P, s))
+def v_s(P, s):
+    """ Specific volume [m^3 / kg]"""
+
+    return v(P, T_s(P, s))
+def u_s(P, s):
+    """ Specific internal energy [kJ / kg]"""
+
+    return u(P, T_s(P, s))   
+def T_s(P, s):
+    """ Temperature [K]"""
+    pi = P / Ps_bs
+    sigma = s / ss_bs
+
+    return theta_s(pi, sigma) * Ts_bs
+def h_s(P, s):
+    """ Specific enthalpy [kJ / kg]"""
+
+    return h(P, T_s(P, s))
+def cp_s(P, s):
+    """ Specific isobaric heat capacity [kJ / kg K]"""
+
+    return cp(P, T_s(P, s))
+def cv_s(P, s):
+    """ Specific isochoric heat capacity [kJ / kg K]"""
+
+    return cv(P, T_s(P, s))
+def w_s(P, s):
+    """ Speed of sound [m / s]"""
+
+    return w(P, T_s(P, s))
+def a_s(P, s):
+    """Isobaric cubic expansion coefficient [1 / K]"""
+
+    return a(P, T_s(P, s))
+def k_s(P, s):
+    """Isothermal compressibility [kg / kJ]"""
+
+    return k(P, T_s(P, s))
+
+#### region 1 property derivatives ####
+def dgdP_s(P, s):
+    """ Derivative of specific gibbs free energy [kJ m^3 / kg kJ]
+    w.r.t pressure at constant specific entropy"""
+    T = T_s(P, s)
+
+    return (dgdP(P, T) * dsdT(P, T) - dgdT(P, T) * dsdP(P, T)) / dsdT(P, T)
+def dvdP_s(P, s):
+    """ Derivative of specific volume [m^3 m^3 / kg kJ]
+    w.r.t pressure at constant specific entropy"""
+    T = T_s(P, s)
+
+    return (dvdP(P, T) * dsdT(P, T) - dvdT(P, T) * dsdP(P, T)) / dsdT(P, T)
+def dudP_s(P, s):
+    """ Derivative of specific internal energy [kJ m^3 / kg kJ]
+    w.r.t pressure at constant specific entropy"""
+    T = T_s(P, s)
+
+    return (dudP(P, T) * dsdT(P, T) - dudT(P, T) * dsdP(P, T)) / dsdT(P, T)
+def dTdP_s(P, s):
+    """ Derivative of Temperature [K m^3 / kJ]
+    w.r.t pressure at constant specific entropy"""
+    T = T_s(P, s)
+
+    return -dsdP(P, T) / dsdT(P, T)
+def dhdP_s(P, s):
+    """ Derivative of specific enthalpy [kJ m^3 / kg kJ]
+    w.r.t pressure at constant specific entropy"""
+    T = T_s(P, s)
+
+    return (dhdP(P, T) * dsdT(P, T) - dhdT(P, T) * dsdP(P, T)) / dsdT(P, T)
+
+def dgds_s(P, s):
+    """ Derivative of specific gibbs free energy [kJ kg K / kg kJ]
+    w.r.t specific entropy at constant pressure"""
+    T = T_s(P, s)
+
+    return dgdT(P, T) / dsdT(P, T)
+def dvds_s(P, s):
+    """ Derivative of specific volume [m^3 kg K / kg kJ]
+    w.r.t specific entropy at constant pressure"""
+    T = T_s(P, s)
+
+    return dvdT(P, T) / dsdT(P, T)
+def duds_s(P, s):
+    """ Derivative of specific internal energy [kJ kg K / kg kJ]
+    w.r.t specific entropy at constant pressure"""
+    T = T_s(P, s)
+
+    return dudT(P, T) / dsdT(P, T)
+def dTds_s(P, s):
+    """ Derivative of Temperature [K kg K/ kJ]
+    w.r.t specific entropy at constant pressure"""
+    T = T_s(P, s)
+
+    return 1 / dsdT(P, T)
+def dhds_s(P, s):
+    """ Derivative of specific enthalpy [kJ kg K / kg kJ]
+    w.r.t specific entropy at constant pressure"""
+    T = T_s(P, s)
+
+    return dhdT(P, T) / dsdT(P, T)

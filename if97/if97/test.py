@@ -129,17 +129,17 @@ class test_ThermodynamicDerivative(unittest.TestCase):
     def test_ThermodynamicPartialP_Region4_state3(self):
         n = 10
         P = numpy.logspace(-3, numpy.log10(h2o.satP(623.15) -  0.1), n)
-        h = h2o.h_e(h2o.satP(623.15), 0.5)
+        h = region4.h_h(h2o.satP(623.15), 0.5)
 
-        dvdpn = [(h2o.v_e(i + i/100, h) - h2o.v_e(i - i/100, h)) / (2*i/100 * 1e3) for i in P]
-        dudpn = [(h2o.u_e(i + i/100, h) - h2o.u_e(i - i/100, h)) / (2*i/100 * 1e3) for i in P]
-        dsdpn = [(h2o.s_e(i + i/100, h) - h2o.s_e(i - i/100, h)) / (2*i/100 * 1e3) for i in P]
-        dgdpn = [(h2o.g_e(i + i/100, h) - h2o.g_e(i - i/100, h)) / (2*i/100 * 1e3) for i in P]
+        dvdpn = [(region4.v_h(i + i/100, h) - region4.v_h(i - i/100, h)) / (2*i/100 * 1e3) for i in P]
+        dudpn = [(region4.u_h(i + i/100, h) - region4.u_h(i - i/100, h)) / (2*i/100 * 1e3) for i in P]
+        dsdpn = [(region4.s_h(i + i/100, h) - region4.s_h(i - i/100, h)) / (2*i/100 * 1e3) for i in P]
+        dgdpn = [(region4.g_h(i + i/100, h) - region4.g_h(i - i/100, h)) / (2*i/100 * 1e3) for i in P]
         
-        dvdp  = [h2o.dvdP_e(i, h) for i in P]
-        dudp  = [h2o.dudP_e(i, h) for i in P]
-        dsdp  = [h2o.dsdP_e(i, h) for i in P]
-        dgdp  = [h2o.dgdP_e(i, h) for i in P]
+        dvdp  = [region4.dvdP_h(i, h) for i in P]
+        dudp  = [region4.dudP_h(i, h) for i in P]
+        dsdp  = [region4.dsdP_h(i, h) for i in P]
+        dgdp  = [region4.dgdP_h(i, h) for i in P]
 
         self.assertLessEqual(abs(sum([(abs(dvdp[i] - dvdpn[i]) / dvdpn[i]) for i in range(n)]) * 100), 0.10,  'Failed dvdP, state 3, region 4!')
         self.assertLessEqual(abs(sum([(abs(dudp[i] - dudpn[i]) / dudpn[i]) for i in range(n)]) * 100), 0.05,  'Failed dudP, state 3, region 4!')
@@ -681,11 +681,11 @@ class test_ThermodynamicPlots(unittest.TestCase):
 
         P4 = numpy.array([numpy.ones(len(Pfg)) * Pfg[n] for n in range(len(Pfg))])
         h4 = numpy.array([numpy.linspace(h2o.hf(n), h2o.hg(n), len(Ts)) for n in Pfg])
-        dhdp4 = numpy.array([[h2o.dhdP_e(Pfg[j], h4[j, i]) for i in range(len(h4))] for j in range(len(Pfg))])
+        dhdp4 = numpy.array([[region4.dhdP_h(Pfg[j], h4[j, i]) for i in range(len(h4))] for j in range(len(Pfg))])
         v4 = numpy.array([numpy.linspace(h2o.vf(n), h2o.vg(n), len(Ts)) for n in Pfg])
-        dvdp4 = numpy.array([[h2o.dvdP_e(Pfg[j], v4[j, i]) for i in range(len(v4))] for j in range(len(Pfg))])
+        dvdp4 = numpy.array([[region4.dvdP_h(Pfg[j], v4[j, i]) for i in range(len(v4))] for j in range(len(Pfg))])
         u4 = numpy.array([numpy.linspace(h2o.uf(n), h2o.ug(n), len(Ts)) for n in Pfg])
-        dudp4 = numpy.array([[h2o.dudP_e(Pfg[j], u4[j, i]) for i in range(len(u4))] for j in range(len(Pfg))])
+        dudp4 = numpy.array([[region4.dudP_h(Pfg[j], u4[j, i]) for i in range(len(u4))] for j in range(len(Pfg))])
 
         lvlh = numpy.linspace(-0.150, 0.015, 22+1)
         lvlh4 = numpy.linspace(-2.5, 50, 22)
