@@ -22,7 +22,6 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="h2o.py" />
     <Compile Include="if97\h2o.py">
       <SubType>Code</SubType>
     </Compile>
@@ -40,15 +39,8 @@
     <Compile Include="if97\test.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="moody.py" />
-    <Compile Include="region1.py" />
-    <Compile Include="region2.py" />
-    <Compile Include="region3.py" />
-    <Compile Include="region4.py" />
     <Compile Include="setup.py" />
     <Compile Include="if97\__init__.py" />
-    <Compile Include="test.py" />
-    <Compile Include="__init__.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="if97\__testout__\test_moody.png" />
@@ -56,13 +48,10 @@
     <Content Include="license.txt" />
     <Content Include="manifest.in" />
     <Content Include="readme.md" />
-    <Content Include="__testout__\test_moody.png" />
-    <Content Include="__testout__\test_PartialP.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="if97\" />
     <Folder Include="if97\__testout__\" />
-    <Folder Include="__testout__\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
