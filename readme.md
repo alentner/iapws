@@ -1,4 +1,4 @@
-# iawps::IF97
+# iawps::IF97::h2o
 ### A Water Properties Python Library
 ==================================
 
@@ -20,7 +20,4 @@ Not implemented equations list:
 
 Not implemented unit testing list:
 * Wrapper consistancy (partials, sat, ext ...)
-* Bacward equations using (P, s)
-* Backward Partials w.r.t. h in regions 1 and 2, 
-                           and dhdp in region 4
 * Region identifications

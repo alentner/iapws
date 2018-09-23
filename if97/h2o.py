@@ -634,8 +634,8 @@ def idRegion_s(P, s):
     # Enthalpy- pressure boundaries
     Pbnd0  = region1.Pbnd0
     Pbnd1  = region1.Pbnd1 
-    sbnd01 = region1.s(Pbnd4, Tbnd01)
-    sbnd25 = region2.s(Pbnd0, Tbnd25)
+    sbnd01 = region1.s(P, Tbnd01)
+    sbnd25 = region2.s(P, Tbnd25)
     Pbndh1 = satP(Tbnd13)
     sbnd13 = region1.s(P, Tbnd13)
     sbnd32 = region2.s(P, Tbnd32)
@@ -948,7 +948,7 @@ def dhds_s(P, s, region = 0):
     elif region is 2:
         return region2.dhds_s(P, s)
     elif region is 4:
-        return region3.dhds_s(P, s)
+        return region4.dhds_s(P, s)
     else:
         return 0.000
 def dTds_s(P, s, region = 0):

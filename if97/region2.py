@@ -593,31 +593,31 @@ def dhdP_s(P, s):
 
     return (dhdP(P, T) * dsdT(P, T) - dhdT(P, T) * dsdP(P, T)) / dsdT(P, T)
 
-def dgdh_s(P, s):
+def dgds_s(P, s):
     """ Derivative of specific gibbs free energy [kJ kg K / kg kJ]
     w.r.t specific entropy at constant pressure"""
     T = T_s(P, s)
 
     return dgdT(P, T) / dsdT(P, T)
-def dvdh_s(P, s):
+def dvds_s(P, s):
     """ Derivative of specific volume [m^3 kg K/ kg kJ]
     w.r.t specific entropy at constant pressure"""
     T = T_s(P, s)
 
     return dvdT(P, T) / dsdT(P, T)
-def dudh_s(P, s):
+def duds_s(P, s):
     """ Derivative of specific internal energy [kJ kg K/ kg kJ]
     w.r.t specific entropy at constant pressure"""
     T = T_s(P, s)
 
     return dudT(P, T) / dsdT(P, T)
-def dTdh_s(P, s):
+def dTds_s(P, s):
     """ Derivative of Temperature [K kg K / kJ]
     w.r.t specific entropy at constant pressure"""
     T = T_s(P, s)
 
     return 1 / dsdT(P, T)
-def dhdh_s(P, s):
+def dhds_s(P, s):
     """ Derivative of specific enthalpy [kJ kg K / kg kJ]
     w.r.t specific entropy at constant pressure"""
     T = T_s(P, s)
