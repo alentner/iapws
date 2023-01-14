@@ -1,4 +1,4 @@
-from if97 import region1, region2
+from . import region1, region2
 
 ###########################################################
 #####       Constants and Dimensionless Functions     #####

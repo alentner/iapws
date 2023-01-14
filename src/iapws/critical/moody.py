@@ -1,4 +1,4 @@
-from if97 import h2o
+from ..if97 import h2o
 from scipy.optimize import brentq as root
 from matplotlib import pyplot
 
