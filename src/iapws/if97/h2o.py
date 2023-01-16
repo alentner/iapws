@@ -1,9 +1,15 @@
+""" Provides the public interface to the water properties """
+
+# internal libraries
 from . import region1, region2, region3, region4
+from . import unit
+from .support import _english, _first, _one, _output, _region, _zero
 
 ###########################################################
 #####          Pressure-Temperature Formulation       #####
 ###########################################################
-def idRegion(P, T):
+@_english((unit.P, unit.T), (_output, ))
+def idRegion(P: float, T: float, /, *, english: bool = False) -> int:
     """Identification of region from IF97 specification
     using pressure and temperature as primary varibles"""
 
@@ -14,266 +20,165 @@ def idRegion(P, T):
     Tbnd25 = region2.Tbnd25
     Tbnd13 = region1.Tbnd13
 
-    # non-constant boundaries
+    # Con-constant boundaries
     Pbnd32 = region3.bnd23P(min(max(T, Tbnd13), 863.15))
     Pbnd4  = satP(min(max(T, Tbnd01), Tbnd13))
 
     region = 0
 
+    # Only region 1, and 2 via P,T relations implemented
     if (P >= Pbnd0) and (T >= Tbnd01) and (P <= Pbnd1) and (T <= Tbnd25):
         if (T <= Tbnd13) and (P >= Pbnd4):
             region = 1
         elif (T < Tbnd13) or (P <= Pbnd32):
             region = 2
         else:
-            # region 3 via P,T relations not implemented
             region = 0
-    assert (region is not 0), "Water properties not avalable!"
+
+    assert (region != 0), "Water properties not avalable!"
     return region
 
 #### water properties ####
-def g(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.g, ))
+@_region({1: region1.g, 2: region2.g}, idRegion)
+def g(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific gibbs free energy [kJ / kg K]"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.g(P, T)
-    elif region is 2:
-        return region2.g(P, T)
-    else:
-        return 0.000
-def v(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.v, ))
+@_region({1: region1.v, 2: region2.v}, idRegion)
+def v(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific volume [m^3 / kg]"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.v(P, T)
-    elif region is 2:
-        return region2.v(P, T)
-    else:
-        return 0.000
-def u(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.u, ))
+@_region({1: region1.u, 2: region2.u}, idRegion)
+def u(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific internal energy [kJ / kg]"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.u(P, T)
-    elif region is 2:
-        return region2.u(P, T)
-    else:
-        return 0.000
-def s(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.s, ))
+@_region({1: region1.s, 2: region2.s}, idRegion)
+def s(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific entropy [kJ / kg K]"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.s(P, T)
-    elif region is 2:
-        return region2.s(P, T)
-    else:
-        return 0.000
-def h(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.h, ))
+@_region({1: region1.h, 2: region2.h}, idRegion)
+def h(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific enthalpy [kJ / kg]"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.h(P, T)
-    elif region is 2:
-        return region2.h(P, T)
-    else:
-        return 0.000
-def cp(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.cp, ))
+@_region({1: region1.cp, 2: region2.cp}, idRegion)
+def cp(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Specific isobaric heat capacity [kJ / kg K]"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.cp(P, T)
-    elif region is 2:
-        return region2.cp(P, T)
-    else:
-        return 0.000
-def cv(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.cv, ))
+@_region({1: region1.cv, 2: region2.cv}, idRegion)
+def cv(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Specific isochoric heat capacity [kJ / kg K]"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.cv(P, T)
-    elif region is 2:
-        return region2.cv(P, T)
-    else:
-        return 0.000
-def w(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.w, ))
+@_region({1: region1.w, 2: region2.w}, idRegion)
+def w(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Speed of sound [m / s]"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.w(P, T)
-    elif region is 2:
-        return region2.w(P, T)
-    else:
-        return 0.000
-def a(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.a, ))
+@_region({1: region1.a, 2: region2.a}, idRegion)
+def a(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """Isobaric cubic expansion coefficient [1 / K]"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.a(P, T)
-    elif region is 2:
-        return region2.a(P, T)
-    else:
-        return 0.000
-def k(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.k, ))
+@_region({1: region1.k, 2: region2.k}, idRegion)
+def k(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """Isothermal compressibility [kg / kJ]"""
-    if region is 0:
-        region = idRegion(P, T)
-
-    if region is 1:
-        return region1.k(P, T)
-    elif region is 2:
-        return region2.k(P, T)
-    else:
-        return 0.000
+    pass
 
 #### water property derivatives ####
-def dgdP(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.dg, unit.d_dP))
+@_region({1: region1.dgdP, 2: region2.dgdP}, idRegion)
+def dgdP(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific gibbs free energy [kJ m^3 / kg kJ]
     w.r.t pressure at constant temperature"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.dgdP(P, T)
-    elif region is 2:
-        return region2.dgdP(P, T)
-    else:
-        return 0.000
-def dvdP(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.dv, unit.d_dP))
+@_region({1: region1.dvdP, 2: region2.dvdP}, idRegion)
+def dvdP(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific volume [m^3 m^3 / kg kJ]
     w.r.t pressure at constant temperature"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.dvdP(P, T)
-    elif region is 2:
-        return region2.dvdP(P, T)
-    else:
-        return 0.000
-def dudP(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.du, unit.d_dP))
+@_region({1: region1.dudP, 2: region2.dudP}, idRegion)
+def dudP(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific internal energy [kJ m^3 / kg kJ]
     w.r.t pressure at constant temperature"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.dudP(P, T)
-    elif region is 2:
-        return region2.dudP(P, T)
-    else:
-        return 0.000
-def dsdP(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.ds, unit.d_dP))
+@_region({1: region1.dsdP, 2: region2.dsdP}, idRegion)
+def dsdP(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific entropy [kJ m^3 / kg K kJ]
     w.r.t pressure at constant temperature"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.dsdP(P, T)
-    elif region is 2:
-        return region2.dsdP(P, T)
-    else:
-        return 0.000
-def dhdP(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.dh, unit.d_dP))
+@_region({1: region1.dhdP, 2: region2.dhdP}, idRegion)
+def dhdP(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific enthalpy [kJ m^3 / kg kJ]
     w.r.t pressure at constant temperature"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.dhdP(P, T)
-    elif region is 2:
-        return region2.dhdP(P, T)
-    else:
-        return 0.000
-
-def dgdT(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.dg, unit.d_dT))
+@_region({1: region1.dgdT, 2: region2.dgdT}, idRegion)
+def dgdT(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific gibbs free energy [kJ / kg K]
     w.r.t temperature at constant pressure"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.dgdT(P, T)
-    elif region is 2:
-        return region2.dgdT(P, T)
-    else:
-        return 0.000
-def dvdT(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.dv, unit.d_dT))
+@_region({1: region1.dvdT, 2: region2.dvdT}, idRegion)
+def dvdT(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific volume [m^3 / kg K]
     w.r.t temperature at constant pressure"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.dvdT(P, T)
-    elif region is 2:
-        return region2.dvdT(P, T)
-    else:
-        return 0.000
-def dudT(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.du, unit.d_dT))
+@_region({1: region1.dudT, 2: region2.dudT}, idRegion)
+def dudT(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific internal energy [kJ / kg K]
     w.r.t temperature at constant pressure"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.dudT(P, T)
-    elif region is 2:
-        return region2.dudT(P, T)
-    else:
-        return 0.000
-def dsdT(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.ds, unit.d_dT))
+@_region({1: region1.dsdT, 2: region2.dsdT}, idRegion)
+def dsdT(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific entropy [kJ / kg K K]
     w.r.t temperature at constant pressure"""
-    if region is 0:
-        region = idRegion(P, T)
+    pass
 
-    if region is 1:
-        return region1.dsdT(P, T)
-    elif region is 2:
-        return region2.dsdT(P, T)
-    else:
-        return 0.000
-def dhdT(P, T, region = 0):
+@_english((unit.P, unit.T), (unit.dh, unit.d_dT))
+@_region({1: region1.dhdT, 2: region2.dhdT}, idRegion)
+def dhdT(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific enthalpy [kJ / kg K]
     w.r.t temperature at constant pressure"""
-    if region is 0:
-        region = idRegion(P, T)
-
-    if region is 1:
-        return region1.dhdT(P, T)
-    elif region is 2:
-        return region2.dhdT(P, T)
-    else:
-        return 0.000
+    pass
 
 ###########################################################
 #####          Pressure-Enthalpy Formulation          #####
 ###########################################################
-def idRegion_h(P, h):
+@_english((unit.P, unit.h), (_output, ))
+def idRegion_h(P: float, h: float, /, *, english: bool = False) -> int:
     """Identification of region from IF97 specification
     using pressure and enthalpy as primary variables"""
 
-    # supporting boundaries
+    # Supporting boundaries
     Tbnd01 = region1.Tbnd01
     Pbnd4  = satP(Tbnd01)
     Tbnd25 = region2.Tbnd25
@@ -294,6 +199,7 @@ def idRegion_h(P, h):
 
     region = 0
 
+    # Only region 1,2,4 via P,h relations implemented
     if (P >= Pbnd0) and (h >= hbnd01) and (P <= Pbnd1) and (h <= hbnd25):
         if (P >= Pbndh1):
             if (h <= hbnd13):
@@ -301,7 +207,6 @@ def idRegion_h(P, h):
             elif (h >= hbnd32):
                 region = 2
             else:
-                # region 3 via P,h relations not implemented
                 region = 0
         else:
             if (h <= hbnd14):
@@ -310,320 +215,165 @@ def idRegion_h(P, h):
                 region = 2
             else:
                 region = 4
-    assert (region is not 0), "Water properties not avalable!"
+
+    assert (region != 0), "Water properties not avalable!"
     return region
 
 #### water properties ####
-def g_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.g, ))
+@_region({1: region1.g_h, 2: region2.g_h, 4: region4.g_h}, idRegion_h)
+def g_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific gibbs free energy [kJ / kg]"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.g_h(P, h)
-    elif region is 2:
-        return region2.g_h(P, h)
-    elif region is 4:
-        return region4.g_h(P, h)
-    else:
-        return 0.000
-def v_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.v, ))
+@_region({1: region1.v_h, 2: region2.v_h, 4: region4.v_h}, idRegion_h)
+def v_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific volume [m^3 / kg]"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.v_h(P, h)
-    elif region is 2:
-        return region2.v_h(P, h)
-    elif region is 4:
-        return region4.v_h(P, h)
-    else:
-        return 0.000
-def u_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.u, ))
+@_region({1: region1.u_h, 2: region2.u_h, 4: region4.u_h}, idRegion_h)
+def u_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific internal energy [kJ / kg]"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.u_h(P, h)
-    elif region is 2:
-        return region2.u_h(P, h)
-    elif region is 4:
-        return region4.u_h(P, h)
-    else:
-        return 0.000
-def s_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.s, ))
+@_region({1: region1.s_h, 2: region2.s_h, 4: region4.s_h}, idRegion_h)
+def s_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific entropy [kJ / kg K]"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.s_h(P, h)
-    elif region is 2:
-        return region2.s_h(P, h)
-    elif region is 4:
-        return region4.s_h(P, h)
-    else:
-        return 0.000
-def T_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.T, ))
+@_region({1: region1.T_h, 2: region2.T_h, 4: _first(region4.satT)}, idRegion_h)
+def T_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Temperature [K]"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.T_h(P, h)
-    elif region is 2:
-        return region2.T_h(P, h)
-    elif region is 4:
-        return region4.satT(P)
-    else:
-        return 0.000
-def cp_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.cp, ))
+@_region({1: region1.cp_h, 2: region2.cp_h, 4: region4.cp_h}, idRegion_h)
+def cp_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Specific isobaric heat capacity [kJ / kg K]"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.cp_h(P, h)
-    elif region is 2:
-        return region2.cp_h(P, h)
-    elif region is 4:
-        return region4.cp_h(P, h)
-    else:
-        return 0.000
-def cv_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.cv, ))
+@_region({1: region1.cv_h, 2: region2.cv_h, 4: region4.cv_h}, idRegion_h)
+def cv_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Specific isochoric heat capacity [kJ / kg K]"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.cv_h(P, h)
-    elif region is 2:
-        return region2.cv_h(P, h)
-    elif region is 4:
-        return region4.cv_h(P, h)
-    else:
-        return 0.000
-def w_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.w, ))
+@_region({1: region1.w_h, 2: region2.w_h, 4: region4.w_h}, idRegion_h)
+def w_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Speed of sound [m / s]"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.w_h(P, h)
-    elif region is 2:
-        return region2.w_h(P, h)
-    elif region is 4:
-        return region4.w_h(P, h)
-    else:
-        return 0.000
-def a_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.a, ))
+@_region({1: region1.a_h, 2: region2.a_h, 4: region4.a_h}, idRegion_h)
+def a_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """Isobaric cubic expansion coefficient [1 / K]"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.a_h(P, h)
-    elif region is 2:
-        return region2.a_h(P, h)
-    elif region is 4:
-        return region4.a_h(P, h)
-    else:
-        return 0.000
-def k_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.k, ))
+@_region({1: region1.k_h, 2: region2.k_h, 4: region4.k_h}, idRegion_h)
+def k_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """Isothermal compressibility [kg / kJ]"""
-    if region is 0:
-        region = idRegion_h(P, h)
-
-    if region is 1:
-        return region1.k_h(P, h)
-    elif region is 2:
-        return region2.k_h(P, h)
-    elif region is 4:
-        return region4.k_h(P, h)
-    else:
-        return 0.000
+    pass
 
 #### water property derivatives ####
-def dgdP_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.dg, unit.d_dP))
+@_region({1: region1.dgdP_h, 2: region2.dgdP_h, 4: region4.dgdP_h}, idRegion_h)
+def dgdP_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific gibbs free energy [kJ m^3 / kg kJ]
     w.r.t pressure at constant specific enthalpy"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.dgdP_h(P, h)
-    elif region is 2:
-        return region2.dgdP_h(P, h)
-    elif region is 4:
-        return region4.dgdP_h(P, h)
-    else:
-        return 0.000
-def dvdP_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.dv, unit.d_dP))
+@_region({1: region1.dvdP_h, 2: region2.dvdP_h, 4: region4.dvdP_h}, idRegion_h)
+def dvdP_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific volume [m^3 m^3 / kg kJ]
     w.r.t pressure at constant specific enthalpy"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.dvdp_h(P, h)
-    elif region is 2:
-        return region2.dvdP_h(P, h)
-    elif region is 4:
-        return region4.dvdP_h(P, h)
-    else:
-        return 0.000
-def dudP_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.du, unit.d_dP))
+@_region({1: region1.dudP_h, 2: region2.dudP_h, 4: region4.dudP_h}, idRegion_h)
+def dudP_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific internal energy [kJ m^3 / kg kJ]
     w.r.t pressure at constant specific enthalpy"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.dudP_h(P, h)
-    elif region is 2:
-        return region2.dudP_h(P, h)
-    elif region is 4:
-        return region4.dudP_h(P, h)
-    else:
-        return 0.000
-def dsdP_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.ds, unit.d_dP))
+@_region({1: region1.dsdP_h, 2: region2.dsdP_h, 4: region4.dsdP_h}, idRegion_h)
+def dsdP_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific entropy [kJ m^3 / kg K kJ]
     w.r.t pressure at constant specific enthalpy"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.dsdP_h(P, h)
-    elif region is 2:
-        return region2.dsdP_h(P, h)
-    elif region is 4:
-        return region4.dsdP_h(P, h)
-    else:
-        return 0.000
-def dhdP_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.dh, unit.d_dP))
+@_region({1: _zero, 2: _zero, 4: region4.dhdP_h}, idRegion_h)
+def dhdP_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific enthalpy [kJ m^3 / kg kJ]
     w.r.t pressure at constant specific enthalpy"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return 0.000
-    elif region is 2:
-        return 0.000
-    elif region is 4:
-        return region4.dhdP_h(P, h)
-    else:
-        return 0.000
-def dTdP_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.dT, unit.d_dP))
+@_region({1: region1.dTdP_h, 2: region2.dTdP_h, 4: _first(region4.dTsdP)}, idRegion_h)
+def dTdP_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of Temperature [K m^3 / kJ]
     w.r.t pressure at constant specific enthalpy"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.dTdP_h(P, h)
-    elif region is 2:
-        return region2.dTdP_h(P, h)
-    elif region is 4:
-        return region4.dTsdP(P)
-    else:
-        return 0.000
-
-def dgdh_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.dg, unit.d_dh))
+@_region({1: region1.dgdh_h, 2: region2.dgdh_h, 4: region4.dgdh_h}, idRegion_h)
+def dgdh_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific gibbs free energy [kJ kg / kg kJ]
     w.r.t specific enthalpy at constant pressure"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.dgdh_h(P, h)
-    elif region is 2:
-        return region2.dgdh_h(P, h)
-    elif region is 4:
-        return region4.dgdh_h(P, h)
-    else:
-        return 0.000
-def dvdh_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.dv, unit.d_dh))
+@_region({1: region1.dvdh_h, 2: region2.dvdh_h, 4: region4.dvdh_h}, idRegion_h)
+def dvdh_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific volume [m^3 kg / kg kJ]
     w.r.t specific enthalpy at constant pressure"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.dvdh_h(P, h)
-    elif region is 2:
-        return region2.dvdh_h(P, h)
-    elif region is 4:
-        return region4.dvdh_h(P, h)
-    else:
-        return 0.000
-def dudh_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.du, unit.d_dh))
+@_region({1: region1.dudh_h, 2: region2.dudh_h, 4: region4.dudh_h}, idRegion_h)
+def dudh_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific internal energy [kJ kg / kg kJ]
     w.r.t specific enthalpy at constant pressure"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.dudh_h(P, h)
-    elif region is 2:
-        return region2.dudh_h(P, h)
-    elif region is 4:
-        return region4.dudh_h(P, h)
-    else:
-        return 0.000
-def dsdh_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.ds, unit.d_dh))
+@_region({1: region1.dsdh_h, 2: region2.dsdh_h, 4: region4.dsdh_h}, idRegion_h)
+def dsdh_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific entropy [kJ kg / kg K kJ]
     w.r.t specific enthalpy at constant pressure"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return region1.dsdh_h(P, h)
-    elif region is 2:
-        return region2.dsdh_h(P, h)
-    elif region is 4:
-        return region4.dsdh_h(P, h)
-    else:
-        return 0.000
-def dhdh_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.dh, unit.d_dh))
+@_region({1: _one, 2: _one, 4: _one}, idRegion_h)
+def dhdh_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific enthalpy [kJ kg / kg kJ]
     w.r.t specific enthalpy at constant pressure"""
-    if region is 0:
-        region = idRegion_h(P, h)
+    pass
 
-    if region is 1:
-        return 1.000
-    elif region is 2:
-        return 1.000
-    elif region is 4:
-        return 1.000
-    else:
-        return 0.000
-def dTdh_h(P, h, region = 0):
+@_english((unit.P, unit.h), (unit.dT, unit.d_dh))
+@_region({1: region1.dTdh_h, 2: region2.dTdh_h, 4: _zero}, idRegion_h)
+def dTdh_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of Temperature [K kg / kJ]
     w.r.t specific enthalpy at constant pressure"""
-    if region is 0:
-        region = idRegion_h(P, h)
-
-    if region is 1:
-        return region1.dTdh_h(P, h)
-    elif region is 2:
-        return region2.dTdh_h(P, h)
-    elif region is 4:
-        return 0.000
-    else:
-        return 0.000
+    pass
 
 ###########################################################
 #####           Pressure-Entropy Formulation          #####
 ###########################################################
-def idRegion_s(P, s):
+@_english((unit.P, unit.s), (_output, ))
+def idRegion_s(P: float, h: float, /, *, english: bool = False) -> int:
     """Identification of region from IF97 specification
     using pressure and enthalpy as primary variables"""
 
-    # supporting boundaries
+    # Supporting boundaries
     Tbnd01 = region1.Tbnd01
     Pbnd4  = satP(Tbnd01)
     Tbnd25 = region2.Tbnd25
@@ -631,7 +381,7 @@ def idRegion_s(P, s):
     Tbnd32 = region3.bnd23T(min(max(P, 16.5292), 100.0))
     Tbnd4  = satT(P)
 
-    # Enthalpy- pressure boundaries
+    # Enthalpy-pressure boundaries
     Pbnd0  = region1.Pbnd0
     Pbnd1  = region1.Pbnd1 
     sbnd01 = region1.s(P, Tbnd01)
@@ -644,6 +394,7 @@ def idRegion_s(P, s):
 
     region = 0
 
+    # Only region 1,2,4 via P,s relations implemented
     if (P >= Pbnd0) and (s >= sbnd01) and (P <= Pbnd1) and (s <= sbnd25):
         if (P >= Pbndh1):
             if (s <= sbnd13):
@@ -651,7 +402,6 @@ def idRegion_s(P, s):
             elif (s >= sbnd32):
                 region = 2
             else:
-                # region 3 via P,h relations not implemented
                 region = 0
         else:
             if (s <= sbnd14):
@@ -660,561 +410,445 @@ def idRegion_s(P, s):
                 region = 2
             else:
                 region = 4
-    assert (region is not 0), "Water properties not avalable!"
+
+    assert (region != 0), "Water properties not avalable!"
     return region
 
 #### water properties ####
-def g_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.g, ))
+@_region({1: region1.g_s, 2: region2.g_s, 4: region4.g_s}, idRegion_s)
+def g_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific gibbs free energy [kJ / kg]"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.g_s(P, s)
-    elif region is 2:
-        return region2.g_s(P, s)
-    elif region is 4:
-        return region4.g_s(P, s)
-    else:
-        return 0.000
-def v_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.v, ))
+@_region({1: region1.v_s, 2: region2.v_s, 4: region4.v_s}, idRegion_s)
+def v_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific volume [m^3 / kg]"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.v_s(P, s)
-    elif region is 2:
-        return region2.v_s(P, s)
-    elif region is 4:
-        return region4.v_s(P, s)
-    else:
-        return 0.000
-def u_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.u, ))
+@_region({1: region1.u_s, 2: region2.u_s, 4: region4.u_s}, idRegion_s)
+def u_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific internal energy [kJ / kg]"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.u_s(P, s)
-    elif region is 2:
-        return region2.u_s(P, s)
-    elif region is 4:
-        return region4.u_s(P, s)
-    else:
-        return 0.000
-def T_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.T, ))
+@_region({1: region1.T_s, 2: region2.T_s, 4: _first(region4.satT)}, idRegion_s)
+def T_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Temperature [K]"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.T_s(P, s)
-    elif region is 2:
-        return region2.T_s(P, s)
-    elif region is 4:
-        return region4.satT(P)
-    else:
-        return 0.000
-def h_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.h, ))
+@_region({1: region1.h_s, 2: region2.h_s, 4: region4.h_s}, idRegion_s)
+def h_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific entropy [kJ / kg]"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.h_s(P, s)
-    elif region is 2:
-        return region2.h_s(P, s)
-    elif region is 4:
-        return region4.h_s(P, s)
-    else:
-        return 0.000
-def cp_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.cp, ))
+@_region({1: region1.cp_s, 2: region2.cp_s, 4: region4.cp_s}, idRegion_s)
+def cp_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Specific isobaric heat capacity [kJ / kg K]"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.cp_s(P, s)
-    elif region is 2:
-        return region2.cp_s(P, s)
-    elif region is 4:
-        return region4.cp_s(P, s)
-    else:
-        return 0.000
-def cv_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.cv, ))
+@_region({1: region1.cv_s, 2: region2.cv_s, 4: region4.cv_s}, idRegion_s)
+def cv_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Specific isochoric heat capacity [kJ / kg K]"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.cv_s(P, s)
-    elif region is 2:
-        return region2.cv_s(P, s)
-    elif region is 4:
-        return region4.cv_s(P, s)
-    else:
-        return 0.000
-def w_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.w, ))
+@_region({1: region1.w_s, 2: region2.w_s, 4: region4.w_s}, idRegion_s)
+def w_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Speed of sound [m / s]"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.w_s(P, s)
-    elif region is 2:
-        return region2.w_s(P, s)
-    elif region is 4:
-        return region4.w_s(P, s)
-    else:
-        return 0.000
-def a_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.a, ))
+@_region({1: region1.a_s, 2: region2.a_s, 4: region4.a_s}, idRegion_s)
+def a_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """Isobaric cubic expansion coefficient [1 / K]"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.a_s(P, s)
-    elif region is 2:
-        return region2.a_s(P, s)
-    elif region is 4:
-        return region4.a_s(P, s)
-    else:
-        return 0.000
-def k_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.k, ))
+@_region({1: region1.k_s, 2: region2.k_s, 4: region4.k_s}, idRegion_s)
+def k_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """Isothermal compressibility [kg / kJ]"""
-    if region is 0:
-        region = idRegion_s(P, s)
-
-    if region is 1:
-        return region1.k_s(P, s)
-    elif region is 2:
-        return region2.k_s(P, s)
-    elif region is 4:
-        return region4.k_s(P, s)
-    else:
-        return 0.000
+    pass
 
 #### water property derivatives ####
-def dgdP_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.dg, unit.d_dP))
+@_region({1: region1.dgdP_s, 2: region2.dgdP_s, 4: region4.dgdP_s}, idRegion_s)
+def dgdP_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific gibbs free energy [kJ m^3 / kg kJ]
     w.r.t pressure at constant specific entropy"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.dgdP_s(P, s)
-    elif region is 2:
-        return region2.dgdP_s(P, s)
-    elif region is 4:
-        return region4.dgdP_s(P, s)
-    else:
-        return 0.000
-def dvdP_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.dv, unit.d_dP))
+@_region({1: region1.dvdP_s, 2: region2.dvdP_s, 4: region4.dvdP_s}, idRegion_s)
+def dvdP_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific volume [m^3 m^3 / kg kJ]
     w.r.t pressure at constant specific entropy"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.dvdP_s(P, s)
-    elif region is 2:
-        return region2.dvdP_s(P, s)
-    elif region is 4:
-        return region4.dvdP_s(P, s)
-    else:
-        return 0.000
-def dudP_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.du, unit.d_dP))
+@_region({1: region1.dudP_s, 2: region2.dudP_s, 4: region4.dudP_s}, idRegion_s)
+def dudP_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific internal energy [kJ m^3 / kg kJ]
     w.r.t pressure at constant specific entropy"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.dudP_s(P, s)
-    elif region is 2:
-        return region2.dudP_s(P, s)
-    elif region is 4:
-        return region4.dudP_s(P, s)
-    else:
-        return 0.000
-def dsdP_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.ds, unit.d_dP))
+@_region({1: _zero, 2: _zero, 4: region4.dsdP_s}, idRegion_s)
+def dsdP_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific entropy [kJ m^3 / kg K kJ]
     w.r.t pressure at constant specific/equilibrium entropy"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return 0.000
-    elif region is 2:
-        return 0.000
-    elif region is 4:
-        return region4.dsdP_s(P, s)
-    else:
-        return 0.000
-def dhdP_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.dh, unit.d_dP))
+@_region({1: region1.dhdP_s, 2: region2.dhdP_s, 4: region4.dhdP_s}, idRegion_s)
+def dhdP_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific enthalpy [kJ m^3 / kg kJ]
     w.r.t pressure at constant specific entropy"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.dhdP_s(P, s)
-    elif region is 2:
-        return region2.dhdP_s(P, s)
-    elif region is 4:
-        return region4.dhdP_s(P, s)
-    else:
-        return 0.000
-def dTdP_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.ds, unit.d_dP))
+@_region({1: region1.dTdP_s, 2: region2.dTdP_s, 4: _first(region4.dTsdP)}, idRegion_s)
+def dTdP_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of Temperature [K m^3 / kJ]
     w.r.t pressure at constant specific entropy"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.dTdP_s(P, s)
-    elif region is 2:
-        return region2.dTdP_s(P, s)
-    elif region is 4:
-        return region4.dTsdP(P)
-    else:
-        return 0.000
-
-def dgds_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.dg, unit.d_ds))
+@_region({1: region1.dgds_s, 2: region2.dgds_s, 4: region4.dgds_s}, idRegion_s)
+def dgds_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific gibbs free energy [kJ kg K / kg kJ]
     w.r.t specific entropy at constant pressure"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.dgds_s(P, s)
-    elif region is 2:
-        return region2.dgds_s(P, s)
-    elif region is 4:
-        return region4.dgds_s(P, s)
-    else:
-        return 0.000
-def dvds_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.dv, unit.d_ds))
+@_region({1: region1.dvds_s, 2: region2.dvds_s, 4: region4.dvds_s}, idRegion_s)
+def dvds_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific volume [m^3 kg K / kg kJ]
     w.r.t specific entropy at constant pressure"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.dvds_s(P, s)
-    elif region is 2:
-        return region2.dvds_s(P, s)
-    elif region is 4:
-        return region4.dvds_s(P, s)
-    else:
-        return 0.000
-def duds_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.du, unit.d_ds))
+@_region({1: region1.duds_s, 2: region2.duds_s, 4: region4.duds_s}, idRegion_s)
+def duds_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific internal energy [kJ kg K / kg kJ]
     w.r.t specific entropy at constant pressure"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.duds_s(P, s)
-    elif region is 2:
-        return region2.duds_s(P, s)
-    elif region is 4:
-        return region4.duds_s(P, s)
-    else:
-        return 0.000
-def dsds_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.ds, unit.d_ds))
+@_region({1: _one, 2: _one, 4: _one}, idRegion_s)
+def dsds_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific entropy [kJ kg K / kg K kJ]
     w.r.t specific entropy at constant pressure"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return 1.000
-    elif region is 2:
-        return 1.000
-    elif region is 4:
-        return 1.000
-    else:
-        return 0.000
-def dhds_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.dh, unit.d_ds))
+@_region({1: region1.dhds_s, 2: region2.dhds_s, 4: region4.dhds_s}, idRegion_s)
+def dhds_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of specific enthalpy [kJ kg K / kg kJ]
     w.r.t specific entropy at constant pressure"""
-    if region is 0:
-        region = idRegion_s(P, s)
+    pass
 
-    if region is 1:
-        return region1.dhds_s(P, s)
-    elif region is 2:
-        return region2.dhds_s(P, s)
-    elif region is 4:
-        return region4.dhds_s(P, s)
-    else:
-        return 0.000
-def dTds_s(P, s, region = 0):
+@_english((unit.P, unit.s), (unit.dT, unit.d_ds))
+@_region({1: region1.dTds_s, 2: region2.dTds_s, 4: _zero}, idRegion_s)
+def dTds_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """ Derivative of Temperature [K kg K / kJ]
     w.r.t enthalpy at constant pressure"""
-    if region is 0:
-        region = idRegion_s(P, s)
-
-    if region is 1:
-        return region1.dTds_s(P, s)
-    elif region is 2:
-        return region2.dTds_s(P, s)
-    elif region is 4:
-        return 0.000
-    else:
-        return 0.000
+    pass
 
 ###########################################################
 #####     Pressure Only (Saturation) Formulation      #####
 ###########################################################
 
 #### P-T saturation curves ####
-def satP(T):
+@_english((unit.T, ), (unit.P, ))
+def satP(T: float, /, *, english: bool = False) -> float:
     """ Saturation Pressure [Mpa]
     for specified Temperature"""
-
     return region4.satP(T)
-def satT(P):
+
+@_english((unit.P, ), (unit.T, ))
+def satT(P: float, /, *, english: bool = False) -> float:
     """ Saturation Temperature [K]
     for specified Pressure"""
-
     return region4.satT(P)
 
 #### Saturated liquid properties ####
-def gf(P):
+@_english((unit.P, ), (unit.g, ))
+def gf(P: float, /, *, english: bool = False) -> float:
     """ Specific gibbs free energy [kJ / kg]
     of saturated liquid"""
-
     return region4.gf(P)
-def vf(P):
+
+@_english((unit.P, ), (unit.v, ))
+def vf(P: float, /, *, english: bool = False) -> float:
     """ Specific volume [m^3 / kg]
     of saturated liquid"""
-
     return region4.vf(P)
-def uf(P):
+
+@_english((unit.P, ), (unit.u, ))
+def uf(P: float, /, *, english: bool = False) -> float:
     """ Specific internal energy [kJ / kg]
     of saturated liquid"""
-
     return region4.uf(P)
-def sf(P):
+
+@_english((unit.P, ), (unit.s, ))
+def sf(P: float, /, *, english: bool = False) -> float:
     """ Specific entropy [kJ / kg K]
     of saturated liquid"""
-
     return region4.sf(P)
-def hf(P):
+
+@_english((unit.P, ), (unit.h, ))
+def hf(P: float, /, *, english: bool = False) -> float:
     """ Specific enthalpy [kJ / kg]
     of saturated liquid"""
-
     return region4.hf(P)
-def cpf(P):
+
+@_english((unit.P, ), (unit.cp, ))
+def cpf(P: float, /, *, english: bool = False) -> float:
     """ Specific isobaric heat capacity [kJ / kg K]
     of saturated liquid"""
-
     return region4.cpf(P)
-def cvf(P):
+
+@_english((unit.P, ), (unit.cv, ))
+def cvf(P: float, /, *, english: bool = False) -> float:
     """ Specific isochoric heat capacity [kJ / kg K]
     of saturated liquid"""
-
     return region4.cvf(P)
-def wf(P):
+
+@_english((unit.P, ), (unit.w, ))
+def wf(P: float, /, *, english: bool = False) -> float:
     """ Speed of sound [m / s]
     of saturated liquid"""
-
     return region4.wf(P)
-def af(P):
+
+@_english((unit.P, ), (unit.a, ))
+def af(P: float, /, *, english: bool = False) -> float:
     """Isobaric cubic expansion coefficient [1 / K]
     of saturated liquid"""
-
     return region4.af(P)
-def kf(P):
+
+@_english((unit.P, ), (unit.k, ))
+def kf(P: float, /, *, english: bool = False) -> float:
     """Isothermal compressibility [kg / kJ]
     of saturated liquid"""
-
     return region4.kf(P)
 
 #### Saturated vapor properties ####
-def gg(P):
+@_english((unit.P, ), (unit.g, ))
+def gg(P: float, /, *, english: bool = False) -> float:
     """ Specific gibbs free energy [kJ / kg]
     of saturated vapor"""
-
     return region4.gg(P)
-def vg(P):
+
+@_english((unit.P, ), (unit.v, ))
+def vg(P: float, /, *, english: bool = False) -> float:
     """ Specific volume [m^3 / kg]
     of saturated vapor"""
-
     return region4.vg(P)
-def ug(P):
+
+@_english((unit.P, ), (unit.u, ))
+def ug(P: float, /, *, english: bool = False) -> float:
     """ Specific internal energy [kJ / kg]
     of saturated vapor"""
-    
     return region4.ug(P)
-def sg(P):
+
+@_english((unit.P, ), (unit.s, ))
+def sg(P: float, /, *, english: bool = False) -> float:
     """ Specific entropy [kJ / kg K]
     of saturated vapor"""
-
     return region4.sg(P)
-def hg(P):
+
+@_english((unit.P, ), (unit.h, ))
+def hg(P: float, /, *, english: bool = False) -> float:
     """ Specific enthalpy [kJ / kg]
     of saturated vapor"""
-    
     return region4.hg(P)
-def cpg(P):
+
+@_english((unit.P, ), (unit.cp, ))
+def cpg(P: float, /, *, english: bool = False) -> float:
     """ Specific isobaric heat capacity [kJ / kg K]
     of saturated vapor"""
-
     return region4.cpg(P)
-def cvg(P):
+
+@_english((unit.P, ), (unit.cv, ))
+def cvg(P: float, /, *, english: bool = False) -> float:
     """ Specific isochoric heat capacity [kJ / kg K]
     of saturated vapor"""
-
     return region4.cvg(P)
-def wg(P):
+
+@_english((unit.P, ), (unit.w, ))
+def wg(P: float, /, *, english: bool = False) -> float:
     """ Speed of sound [m / s]
     of saturated vapor"""
-
     return region4.wg(P)
-def ag(P):
+
+@_english((unit.P, ), (unit.a, ))
+def ag(P: float, /, *, english: bool = False) -> float:
     """Isobaric cubic expansion coefficient [1 / K]
     of saturated vapor"""
-
     return region4.ag(P)
-def kg(P):
+
+@_english((unit.P, ), (unit.k, ))
+def kg(P: float, /, *, english: bool = False) -> float:
     """Isothermal compressibility [kg / kJ]
     of saturated vapor"""
-
     return region4.kg(P)
 
 #### delta saturation properties ####
-def gfg(P):
+@_english((unit.P, ), (unit.g, ))
+def gfg(P: float, /, *, english: bool = False) -> float:
     """ Specific gibbs free energy; [kJ / kg]
     saturation rise of"""
-
     return region4.gfg(P)
-def vfg(P):
+
+@_english((unit.P, ), (unit.v, ))
+def vfg(P: float, /, *, english: bool = False) -> float:
     """ Specific volume; [m^3 / kg]
     saturation rise of"""
-
     return region4.vfg(P)
-def ufg(P):
+
+@_english((unit.P, ), (unit.u, ))
+def ufg(P: float, /, *, english: bool = False) -> float:
     """ Specific internal energy; [kJ / kg]
     saturation rise of"""
-
     return region4.ufg(P)
-def sfg(P):
+
+@_english((unit.P, ), (unit.s, ))
+def sfg(P: float, /, *, english: bool = False) -> float:
     """ Specific entropy; [kJ / kg K]
     saturation rise of"""
-
     return region4.sfg(P)
-def hfg(P):
+
+@_english((unit.P, ), (unit.h, ))
+def hfg(P: float, /, *, english: bool = False) -> float:
     """ Specific enthalpy; [kJ / kg]
     saturation rise of"""
-
     return region4.hfg(P)
-def cpfg(P):
+
+@_english((unit.P, ), (unit.cp, ))
+def cpfg(P: float, /, *, english: bool = False) -> float:
     """ Specific isobaric heat capacity; [kJ / kg K]
     saturation rise of"""
-
     return region4.cpfg(P)
-def cvfg(P):
+
+@_english((unit.P, ), (unit.cv, ))
+def cvfg(P: float, /, *, english: bool = False) -> float:
     """ Specific isochoric heat capacity; [kJ / kg K]
     saturation rise of"""
-
     return region4.cvfg(P)
-def wfg(P):
+
+@_english((unit.P, ), (unit.w, ))
+def wfg(P: float, /, *, english: bool = False) -> float:
     """ Speed of sound; [m / s]
     saturation rise of"""
-
     return region4.wfg(P)
-def afg(P):
+
+@_english((unit.P, ), (unit.a, ))
+def afg(P: float, /, *, english: bool = False) -> float:
     """Isobaric cubic expansion coefficient; [1 / K]
     saturation rise of"""
-
     return region4.afg(P)
-def kfg(P):
+
+@_english((unit.P, ), (unit.k, ))
+def kfg(P: float, /, *, english: bool = False) -> float:
     """Isothermal compressibility; [kg / kJ]
     saturation rise of"""
-
     return region4.kfg(P)
 
 #### Saturated liquid derivatives ####
-def dgfdP(P):
+@_english((unit.P, ), (unit.dg, unit.d_dP))
+def dgfdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific gibbs free energy [kJ m^3 / kg kJ]
     of saturated liquid w.r.t. pressure"""
-
     return region4.dgfdP(P)
-def dvfdP(P):
+
+@_english((unit.P, ), (unit.dv, unit.d_dP))
+def dvfdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific volume [m^3 m^3 / kg kJ]
     of saturated liquid w.r.t. pressure"""
-
     return region4.dvfdP(P)
-def dufdP(P):
+
+@_english((unit.P, ), (unit.du, unit.d_dP))
+def dufdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific internal energy [kJ m^3 / kg kJ]
     of saturated liquid w.r.t. pressure"""
-
     return region4.dufdP(P)
-def dsfdP(P):
+
+@_english((unit.P, ), (unit.ds, unit.d_dP))
+def dsfdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific entropy [kJ m^3 / kg K kJ]
     of saturated liquid w.r.t. pressure"""
-
     return region4.dsfdP(P)
-def dhfdP(P):
+
+@_english((unit.P, ), (unit.dh, unit.d_dP))
+def dhfdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific enthalpy [kJ m^3 / kg kJ]
     of saturated liquid w.r.t. pressure"""
-
     return region4.dhfdP(P)
 
 #### Saturated vapor derivatives ####
-def dggdP(P):
+@_english((unit.P, ), (unit.dg, unit.d_dP))
+def dggdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific gibbs free energy [kJ m^3 / kg kJ]
     of saturated vapor w.r.t. pressure"""
-
     return region4.dggdP(P)
-def dvgdP(P):
+
+@_english((unit.P, ), (unit.dv, unit.d_dP))
+def dvgdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific volume [m^3 m^3 / kg kJ]
     of saturated vapor w.r.t. pressure"""
-
     return region4.dvgdP(P)
-def dugdP(P):
+
+@_english((unit.P, ), (unit.du, unit.d_dP))
+def dugdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific internal energy [kJ m^3 / kg kJ]
     of saturated vapor w.r.t. pressure"""
-
     return region4.dugdP(P)
-def dsgdP(P):
+
+@_english((unit.P, ), (unit.ds, unit.d_dP))
+def dsgdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific entropy [kJ m^3 / kg K kJ]
     of saturated vapor w.r.t. pressure"""
-
     return region4.dsgdP(P)
-def dhgdP(P):
+
+@_english((unit.P, ), (unit.dh, unit.d_dP))
+def dhgdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific enthalpy [kJ m^3 / kg kJ]
     of saturated vapor w.r.t. pressure"""
-
     return region4.dhgdP(P)
 
 #### Delta saturation derivatives ####
-def dgfgdP(P):
+@_english((unit.P, ), (unit.dg, unit.d_dP))
+def dgfgdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific gibbs free energy [kJ m^3 / kg kJ]
     w.r.t. pressure; saturation rise of"""
-
     return region4.dgfgdP(P)
-def dvfgdP(P):
+
+@_english((unit.P, ), (unit.dv, unit.d_dP))
+def dvfgdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific volume [m^3 m^3 / kg kJ]
     w.r.t. pressure; saturation rise of"""
-
     return region4.dvfgdP(P)
-def dufgdP(P):
+
+@_english((unit.P, ), (unit.du, unit.d_dP))
+def dufgdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific internal energy [kJ m^3 / kg kJ]
     w.r.t. pressure; saturation rise of"""
-
     return region4.dufgdP(P)
-def dsfgdP(P):
+
+@_english((unit.P, ), (unit.ds, unit.d_dP))
+def dsfgdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific entropy [kJ m^3 / kg K kJ]
     w.r.t. pressure; saturation rise of"""
-
     return region4.dsfgdP(P)
-def dhfgdP(P):
+
+@_english((unit.P, ), (unit.dh, unit.d_dP))
+def dhfgdP(P: float, /, *, english: bool = False) -> float:
     """ Derivative of Specific enthalpy [kJ m^3 / kg kJ]
     w.r.t. pressure; saturation rise of"""
-
     return region4.dhfgdP(P)

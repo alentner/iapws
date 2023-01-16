@@ -17,7 +17,7 @@ with open('src/iapws/__meta__.py', mode='r') as source:
 
 # core dependancies
 DEPENDANCIES = ['numpy', 'scipy']
-OPTIONAL_PKG = { }
+OPTIONAL_PKG = {'test': ['matplotlib', ], }
 
 # Define the setup configuration
 setup(

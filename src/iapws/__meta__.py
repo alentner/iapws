@@ -1,7 +1,7 @@
 """Metadata for iapws package."""
 
 __pkgname__     = 'iapws'
-__version__     = '0.1.90'
+__version__     = '0.2.01'
 __authors__     = 'Aaron Lentner'
 __contact__     = 'aaronlentner@gwu.edu'
 __license__     = 'MIT License'
