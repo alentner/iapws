@@ -369,7 +369,7 @@ def dTdh_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> 
 #####           Pressure-Entropy Formulation          #####
 ###########################################################
 @_english((unit.P, unit.s), (_output, ))
-def idRegion_s(P: float, h: float, /, *, english: bool = False) -> int:
+def idRegion_s(P: float, s: float, /, *, english: bool = False) -> int:
     """Identification of region from IF97 specification
     using pressure and enthalpy as primary variables"""
 
