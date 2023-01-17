@@ -1,3 +1,5 @@
+""" Provides supporting routines and decorators for IF97 """
+
 # type annotations
 from __future__ import annotations
 from typing import cast, TYPE_CHECKING

@@ -1,3 +1,5 @@
+""" Provides unit definitions for physical quantities and conversions """
+
 # type annotations
 from __future__ import annotations
 
@@ -73,14 +75,14 @@ def w(w: float, /, *, english: bool = True) -> float:
     return w
 
 @_conversion( 1 / _temperature)
-def a(a: float, /, *, english: bool = True) -> float:
+def av(av: float, /, *, english: bool = True) -> float:
     """Isobaric cubic expansion coefficient [1 / F] -> [1 / K]"""
-    return a
+    return av
 
-@_conversion(1 / _pressure)
-def k(k: float, /, *, english: bool = True) -> float:
-    """Isothermal compressibility [1 / psi] -> [1 / MPa]"""
-    return k
+@_conversion(_kilo_mega / _pressure)
+def kT(kT: float, /, *, english: bool = True) -> float:
+    """Isothermal compressibility [1 / psi] -> [m^3 / kJ]"""
+    return kT
 
 #### unit conversion (derivatives) functions ####
 @_conversion(_temperature)

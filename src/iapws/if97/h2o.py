@@ -1,5 +1,8 @@
 """ Provides the public interface to the water properties """
 
+# type annotations
+from __future__ import annotations
+
 # internal libraries
 from . import region1, region2, region3, region4
 from . import unit
@@ -87,15 +90,15 @@ def w(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float
     """ Speed of sound [m / s]"""
     pass
 
-@_english((unit.P, unit.T), (unit.a, ))
-@_region({1: region1.a, 2: region2.a}, idRegion)
-def a(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
+@_english((unit.P, unit.T), (unit.av, ))
+@_region({1: region1.av, 2: region2.av}, idRegion)
+def av(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """Isobaric cubic expansion coefficient [1 / K]"""
     pass
 
-@_english((unit.P, unit.T), (unit.k, ))
-@_region({1: region1.k, 2: region2.k}, idRegion)
-def k(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
+@_english((unit.P, unit.T), (unit.kT, ))
+@_region({1: region1.kT, 2: region2.kT}, idRegion)
+def kT(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """Isothermal compressibility [kg / kJ]"""
     pass
 
@@ -268,15 +271,15 @@ def w_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> flo
     """ Speed of sound [m / s]"""
     pass
 
-@_english((unit.P, unit.h), (unit.a, ))
-@_region({1: region1.a_h, 2: region2.a_h, 4: region4.a_h}, idRegion_h)
-def a_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
+@_english((unit.P, unit.h), (unit.av, ))
+@_region({1: region1.av_h, 2: region2.av_h, 4: region4.av_h}, idRegion_h)
+def av_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """Isobaric cubic expansion coefficient [1 / K]"""
     pass
 
-@_english((unit.P, unit.h), (unit.k, ))
-@_region({1: region1.k_h, 2: region2.k_h, 4: region4.k_h}, idRegion_h)
-def k_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
+@_english((unit.P, unit.h), (unit.kT, ))
+@_region({1: region1.kT_h, 2: region2.kT_h, 4: region4.kT_h}, idRegion_h)
+def kT_h(P: float, h: float, /, *, english: bool = False, region: int = 0) -> float:
     """Isothermal compressibility [kg / kJ]"""
     pass
 
@@ -463,15 +466,15 @@ def w_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> flo
     """ Speed of sound [m / s]"""
     pass
 
-@_english((unit.P, unit.s), (unit.a, ))
-@_region({1: region1.a_s, 2: region2.a_s, 4: region4.a_s}, idRegion_s)
-def a_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
+@_english((unit.P, unit.s), (unit.av, ))
+@_region({1: region1.av_s, 2: region2.av_s, 4: region4.av_s}, idRegion_s)
+def av_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """Isobaric cubic expansion coefficient [1 / K]"""
     pass
 
-@_english((unit.P, unit.s), (unit.k, ))
-@_region({1: region1.k_s, 2: region2.k_s, 4: region4.k_s}, idRegion_s)
-def k_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
+@_english((unit.P, unit.s), (unit.kT, ))
+@_region({1: region1.kT_s, 2: region2.kT_s, 4: region4.kT_s}, idRegion_s)
+def kT_s(P: float, s: float, /, *, english: bool = False, region: int = 0) -> float:
     """Isothermal compressibility [kg / kJ]"""
     pass
 
@@ -626,14 +629,14 @@ def wf(P: float, /, *, english: bool = False) -> float:
     of saturated liquid"""
     return region4.wf(P)
 
-@_english((unit.P, ), (unit.a, ))
-def af(P: float, /, *, english: bool = False) -> float:
+@_english((unit.P, ), (unit.av, ))
+def avf(P: float, /, *, english: bool = False) -> float:
     """Isobaric cubic expansion coefficient [1 / K]
     of saturated liquid"""
     return region4.af(P)
 
-@_english((unit.P, ), (unit.k, ))
-def kf(P: float, /, *, english: bool = False) -> float:
+@_english((unit.P, ), (unit.kT, ))
+def kTf(P: float, /, *, english: bool = False) -> float:
     """Isothermal compressibility [kg / kJ]
     of saturated liquid"""
     return region4.kf(P)
@@ -687,14 +690,14 @@ def wg(P: float, /, *, english: bool = False) -> float:
     of saturated vapor"""
     return region4.wg(P)
 
-@_english((unit.P, ), (unit.a, ))
-def ag(P: float, /, *, english: bool = False) -> float:
+@_english((unit.P, ), (unit.av, ))
+def avg(P: float, /, *, english: bool = False) -> float:
     """Isobaric cubic expansion coefficient [1 / K]
     of saturated vapor"""
     return region4.ag(P)
 
-@_english((unit.P, ), (unit.k, ))
-def kg(P: float, /, *, english: bool = False) -> float:
+@_english((unit.P, ), (unit.kT, ))
+def kTg(P: float, /, *, english: bool = False) -> float:
     """Isothermal compressibility [kg / kJ]
     of saturated vapor"""
     return region4.kg(P)
@@ -748,14 +751,14 @@ def wfg(P: float, /, *, english: bool = False) -> float:
     saturation rise of"""
     return region4.wfg(P)
 
-@_english((unit.P, ), (unit.a, ))
-def afg(P: float, /, *, english: bool = False) -> float:
+@_english((unit.P, ), (unit.av, ))
+def avfg(P: float, /, *, english: bool = False) -> float:
     """Isobaric cubic expansion coefficient; [1 / K]
     saturation rise of"""
     return region4.afg(P)
 
-@_english((unit.P, ), (unit.k, ))
-def kfg(P: float, /, *, english: bool = False) -> float:
+@_english((unit.P, ), (unit.kT, ))
+def kTfg(P: float, /, *, english: bool = False) -> float:
     """Isothermal compressibility; [kg / kJ]
     saturation rise of"""
     return region4.kfg(P)

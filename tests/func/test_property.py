@@ -101,8 +101,8 @@ class test_ThermodynamicPropertyBackwards(unittest.TestCase):
         self.assertAlmostEqual(region1.cp(3, 300) / region1.cp_h(3, region1.h(3, 300)), 1.000, places=2, msg='Failed cp consistancy, state 1, region 1!')
         self.assertAlmostEqual(region1.cv(3, 300) / region1.cv_h(3, region1.h(3, 300)), 1.000, places=2, msg='Failed cv consistancy, state 1, region 1!')
         self.assertAlmostEqual(region1.w(3, 300)  / region1.w_h(3,  region1.h(3, 300)), 1.000, places=2, msg='Failed w consistancy,  state 1, region 1!')
-        self.assertAlmostEqual(region1.a(3, 300)  / region1.a_h(3,  region1.h(3, 300)), 1.000, places=2, msg='Failed a consistancy,  state 1, region 1!')
-        self.assertAlmostEqual(region1.k(3, 300)  / region1.k_h(3,  region1.h(3, 300)), 1.000, places=2, msg='Failed k consistancy,  state 1, region 1!')
+        self.assertAlmostEqual(region1.av(3, 300)  / region1.av_h(3,  region1.h(3, 300)), 1.000, places=2, msg='Failed av consistancy,  state 1, region 1!')
+        self.assertAlmostEqual(region1.kT(3, 300)  / region1.kT_h(3,  region1.h(3, 300)), 1.000, places=2, msg='Failed kT consistancy,  state 1, region 1!')
 
         self.assertAlmostEqual(region1.v(80, 300)  / region1.v_h(80,  region1.h(80, 300)), 1.000, places=2, msg='Failed v consistancy,  state 2, region 1!')
         self.assertAlmostEqual(region1.u(80, 300)  / region1.u_h(80,  region1.h(80, 300)), 1.000, places=2, msg='Failed u consistancy,  state 2, region 1!')
@@ -111,8 +111,8 @@ class test_ThermodynamicPropertyBackwards(unittest.TestCase):
         self.assertAlmostEqual(region1.cp(80, 300) / region1.cp_h(80, region1.h(80, 300)), 1.000, places=2, msg='Failed cp consistancy, state 2, region 1!')
         self.assertAlmostEqual(region1.cv(80, 300) / region1.cv_h(80, region1.h(80, 300)), 1.000, places=2, msg='Failed cv consistancy, state 2, region 1!')
         self.assertAlmostEqual(region1.w(80, 300)  / region1.w_h(80,  region1.h(80, 300)), 1.000, places=2, msg='Failed w consistancy,  state 2, region 1!')
-        self.assertAlmostEqual(region1.a(80, 300)  / region1.a_h(80,  region1.h(80, 300)), 1.000, places=2, msg='Failed a consistancy,  state 2, region 1!')
-        self.assertAlmostEqual(region1.k(80, 300)  / region1.k_h(80,  region1.h(80, 300)), 1.000, places=2, msg='Failed k consistancy,  state 2, region 1!')
+        self.assertAlmostEqual(region1.av(80, 300)  / region1.av_h(80,  region1.h(80, 300)), 1.000, places=2, msg='Failed av consistancy,  state 2, region 1!')
+        self.assertAlmostEqual(region1.kT(80, 300)  / region1.kT_h(80,  region1.h(80, 300)), 1.000, places=2, msg='Failed kT consistancy,  state 2, region 1!')
         
         self.assertAlmostEqual(region1.v(3, 500)  / region1.v_h(3,  region1.h(3, 500)), 1.000, places=2, msg='Failed v consistancy,  state 3, region 1!')
         self.assertAlmostEqual(region1.u(3, 500)  / region1.u_h(3,  region1.h(3, 500)), 1.000, places=2, msg='Failed u consistancy,  state 3, region 1!')
@@ -121,8 +121,8 @@ class test_ThermodynamicPropertyBackwards(unittest.TestCase):
         self.assertAlmostEqual(region1.cp(3, 500) / region1.cp_h(3, region1.h(3, 500)), 1.000, places=2, msg='Failed cp consistancy, state 3, region 1!')
         self.assertAlmostEqual(region1.cv(3, 500) / region1.cv_h(3, region1.h(3, 500)), 1.000, places=2, msg='Failed cv consistancy, state 3, region 1!')
         self.assertAlmostEqual(region1.w(3, 500)  / region1.w_h(3,  region1.h(3, 500)), 1.000, places=2, msg='Failed w consistancy,  state 3, region 1!')
-        self.assertAlmostEqual(region1.a(3, 500)  / region1.a_h(3,  region1.h(3, 500)), 1.000, places=2, msg='Failed a consistancy,  state 3, region 1!')
-        self.assertAlmostEqual(region1.k(3, 500)  / region1.k_h(3,  region1.h(3, 500)), 1.000, places=2, msg='Failed k consistancy,  state 3, region 1!')
+        self.assertAlmostEqual(region1.av(3, 500)  / region1.av_h(3,  region1.h(3, 500)), 1.000, places=2, msg='Failed av consistancy,  state 3, region 1!')
+        self.assertAlmostEqual(region1.kT(3, 500)  / region1.kT_h(3,  region1.h(3, 500)), 1.000, places=2, msg='Failed kT consistancy,  state 3, region 1!')
 
     def test_ThermodynamicProperty_Region1_Ps(self):
         self.assertEqual(round(region1.T_s(3,  0.5), 6), 0.307842258e3, 'Failed backward temperature, state 1, region 1!') 
@@ -136,8 +136,8 @@ class test_ThermodynamicPropertyBackwards(unittest.TestCase):
         self.assertAlmostEqual(region1.cp(3, 300) / region1.cp_s(3, region1.s(3, 300)), 1.000, places=2, msg='Failed cp consistancy, state 1, region 1!')
         self.assertAlmostEqual(region1.cv(3, 300) / region1.cv_s(3, region1.s(3, 300)), 1.000, places=2, msg='Failed cv consistancy, state 1, region 1!')
         self.assertAlmostEqual(region1.w(3, 300)  / region1.w_s(3,  region1.s(3, 300)), 1.000, places=2, msg='Failed w consistancy,  state 1, region 1!')
-        self.assertAlmostEqual(region1.a(3, 300)  / region1.a_s(3,  region1.s(3, 300)), 1.000, places=2, msg='Failed a consistancy,  state 1, region 1!')
-        self.assertAlmostEqual(region1.k(3, 300)  / region1.k_s(3,  region1.s(3, 300)), 1.000, places=2, msg='Failed k consistancy,  state 1, region 1!')
+        self.assertAlmostEqual(region1.av(3, 300)  / region1.av_s(3,  region1.s(3, 300)), 1.000, places=2, msg='Failed av consistancy,  state 1, region 1!')
+        self.assertAlmostEqual(region1.kT(3, 300)  / region1.kT_s(3,  region1.s(3, 300)), 1.000, places=2, msg='Failed kT consistancy,  state 1, region 1!')
 
         self.assertAlmostEqual(region1.v(80, 300)  / region1.v_s(80,  region1.s(80, 300)), 1.000, places=2, msg='Failed v consistancy,  state 2, region 1!')
         self.assertAlmostEqual(region1.u(80, 300)  / region1.u_s(80,  region1.s(80, 300)), 1.000, places=2, msg='Failed u consistancy,  state 2, region 1!')
@@ -146,8 +146,8 @@ class test_ThermodynamicPropertyBackwards(unittest.TestCase):
         self.assertAlmostEqual(region1.cp(80, 300) / region1.cp_s(80, region1.s(80, 300)), 1.000, places=2, msg='Failed cp consistancy, state 2, region 1!')
         self.assertAlmostEqual(region1.cv(80, 300) / region1.cv_s(80, region1.s(80, 300)), 1.000, places=2, msg='Failed cv consistancy, state 2, region 1!')
         self.assertAlmostEqual(region1.w(80, 300)  / region1.w_s(80,  region1.s(80, 300)), 1.000, places=2, msg='Failed w consistancy,  state 2, region 1!')
-        self.assertAlmostEqual(region1.a(80, 300)  / region1.a_s(80,  region1.s(80, 300)), 1.000, places=2, msg='Failed a consistancy,  state 2, region 1!')
-        self.assertAlmostEqual(region1.k(80, 300)  / region1.k_s(80,  region1.s(80, 300)), 1.000, places=2, msg='Failed k consistancy,  state 2, region 1!')
+        self.assertAlmostEqual(region1.av(80, 300)  / region1.av_s(80,  region1.s(80, 300)), 1.000, places=2, msg='Failed av consistancy,  state 2, region 1!')
+        self.assertAlmostEqual(region1.kT(80, 300)  / region1.kT_s(80,  region1.s(80, 300)), 1.000, places=2, msg='Failed kT consistancy,  state 2, region 1!')
         
         self.assertAlmostEqual(region1.v(3, 500)  / region1.v_s(3,  region1.s(3, 500)), 1.000, places=2, msg='Failed v consistancy,  state 3, region 1!')
         self.assertAlmostEqual(region1.u(3, 500)  / region1.u_s(3,  region1.s(3, 500)), 1.000, places=2, msg='Failed u consistancy,  state 3, region 1!')
@@ -156,8 +156,8 @@ class test_ThermodynamicPropertyBackwards(unittest.TestCase):
         self.assertAlmostEqual(region1.cp(3, 500) / region1.cp_s(3, region1.s(3, 500)), 1.000, places=2, msg='Failed cp consistancy, state 3, region 1!')
         self.assertAlmostEqual(region1.cv(3, 500) / region1.cv_s(3, region1.s(3, 500)), 1.000, places=2, msg='Failed cv consistancy, state 3, region 1!')
         self.assertAlmostEqual(region1.w(3, 500)  / region1.w_s(3,  region1.s(3, 500)), 1.000, places=2, msg='Failed w consistancy,  state 3, region 1!')
-        self.assertAlmostEqual(region1.a(3, 500)  / region1.a_s(3,  region1.s(3, 500)), 1.000, places=2, msg='Failed a consistancy,  state 3, region 1!')
-        self.assertAlmostEqual(region1.k(3, 500)  / region1.k_s(3,  region1.s(3, 500)), 1.000, places=2, msg='Failed k consistancy,  state 3, region 1!')
+        self.assertAlmostEqual(region1.av(3, 500)  / region1.av_s(3,  region1.s(3, 500)), 1.000, places=2, msg='Failed av consistancy,  state 3, region 1!')
+        self.assertAlmostEqual(region1.kT(3, 500)  / region1.kT_s(3,  region1.s(3, 500)), 1.000, places=2, msg='Failed kT consistancy,  state 3, region 1!')
 
     def test_ThermodynamicProperty_Region2_Ph(self):
         self.assertEqual(round(region2.bnd2b2c(0.100e3), 6), 0.3516004323e4, 'Failed boundary equation, region 2b-2c!')  
@@ -178,8 +178,8 @@ class test_ThermodynamicPropertyBackwards(unittest.TestCase):
         self.assertAlmostEqual(region2.cp(0.0035, 300) / region2.cp_h(0.0035, region2.h(0.0035, 300)), 1.000, places=2, msg='Failed cp consistancy, state 1, region 2!')
         self.assertAlmostEqual(region2.cv(0.0035, 300) / region2.cv_h(0.0035, region2.h(0.0035, 300)), 1.000, places=2, msg='Failed cv consistancy, state 1, region 2!')
         self.assertAlmostEqual(region2.w(0.0035, 300)  / region2.w_h(0.0035,  region2.h(0.0035, 300)), 1.000, places=2, msg='Failed w consistancy,  state 1, region 2!')
-        self.assertAlmostEqual(region2.a(0.0035, 300)  / region2.a_h(0.0035,  region2.h(0.0035, 300)), 1.000, places=2, msg='Failed a consistancy,  state 1, region 2!')
-        self.assertAlmostEqual(region2.k(0.0035, 300)  / region2.k_h(0.0035,  region2.h(0.0035, 300)), 1.000, places=2, msg='Failed k consistancy,  state 1, region 2!')
+        self.assertAlmostEqual(region2.av(0.0035, 300)  / region2.av_h(0.0035,  region2.h(0.0035, 300)), 1.000, places=2, msg='Failed av consistancy,  state 1, region 2!')
+        self.assertAlmostEqual(region2.kT(0.0035, 300)  / region2.kT_h(0.0035,  region2.h(0.0035, 300)), 1.000, places=2, msg='Failed kT consistancy,  state 1, region 2!')
 
         self.assertAlmostEqual(region2.v(0.0035, 700)  / region2.v_h(0.0035,  region2.h(0.0035, 700)), 1.000, places=2, msg='Failed v consistancy,  state 2, region 2!')
         self.assertAlmostEqual(region2.u(0.0035, 700)  / region2.u_h(0.0035,  region2.h(0.0035, 700)), 1.000, places=2, msg='Failed u consistancy,  state 2, region 2!')
@@ -188,8 +188,8 @@ class test_ThermodynamicPropertyBackwards(unittest.TestCase):
         self.assertAlmostEqual(region2.cp(0.0035, 700) / region2.cp_h(0.0035, region2.h(0.0035, 700)), 1.000, places=2, msg='Failed cp consistancy, state 2, region 2!')
         self.assertAlmostEqual(region2.cv(0.0035, 700) / region2.cv_h(0.0035, region2.h(0.0035, 700)), 1.000, places=2, msg='Failed cv consistancy, state 2, region 2!')
         self.assertAlmostEqual(region2.w(0.0035, 700)  / region2.w_h(0.0035,  region2.h(0.0035, 700)), 1.000, places=2, msg='Failed w consistancy,  state 2, region 2!')
-        self.assertAlmostEqual(region2.a(0.0035, 700)  / region2.a_h(0.0035,  region2.h(0.0035, 700)), 1.000, places=2, msg='Failed a consistancy,  state 2, region 2!')
-        self.assertAlmostEqual(region2.k(0.0035, 700)  / region2.k_h(0.0035,  region2.h(0.0035, 700)), 1.000, places=2, msg='Failed k consistancy,  state 2, region 2!')
+        self.assertAlmostEqual(region2.av(0.0035, 700)  / region2.av_h(0.0035,  region2.h(0.0035, 700)), 1.000, places=2, msg='Failed av consistancy,  state 2, region 2!')
+        self.assertAlmostEqual(region2.kT(0.0035, 700)  / region2.kT_h(0.0035,  region2.h(0.0035, 700)), 1.000, places=2, msg='Failed kT consistancy,  state 2, region 2!')
         
         self.assertAlmostEqual(region2.v(30, 700)  / region2.v_h(30,  region2.h(30, 700)), 1.000, places=2, msg='Failed v consistancy,  state 3, region 2!')
         self.assertAlmostEqual(region2.u(30, 700)  / region2.u_h(30,  region2.h(30, 700)), 1.000, places=2, msg='Failed u consistancy,  state 3, region 2!')
@@ -198,8 +198,8 @@ class test_ThermodynamicPropertyBackwards(unittest.TestCase):
         self.assertAlmostEqual(region2.cp(30, 700) / region2.cp_h(30, region2.h(30, 700)), 1.000, places=2, msg='Failed cp consistancy, state 3, region 2!')
         self.assertAlmostEqual(region2.cv(30, 700) / region2.cv_h(30, region2.h(30, 700)), 1.000, places=2, msg='Failed cv consistancy, state 3, region 2!')
         self.assertAlmostEqual(region2.w(30, 700)  / region2.w_h(30,  region2.h(30, 700)), 1.000, places=2, msg='Failed w consistancy,  state 3, region 2!')
-        self.assertAlmostEqual(region2.a(30, 700)  / region2.a_h(30,  region2.h(30, 700)), 1.000, places=2, msg='Failed a consistancy,  state 3, region 2!')
-        self.assertAlmostEqual(region2.k(30, 700)  / region2.k_h(30,  region2.h(30, 700)), 1.000, places=2, msg='Failed k consistancy,  state 3, region 2!')
+        self.assertAlmostEqual(region2.av(30, 700)  / region2.av_h(30,  region2.h(30, 700)), 1.000, places=2, msg='Failed av consistancy,  state 3, region 2!')
+        self.assertAlmostEqual(region2.kT(30, 700)  / region2.kT_h(30,  region2.h(30, 700)), 1.000, places=2, msg='Failed kT consistancy,  state 3, region 2!')
 
     def test_ThermodynamicProperty_Region2_Ps(self):
         self.assertEqual(round(region2.T_s(0.1, 7.5), 6), 0.399517097e3,  'Failed backward temperature, state 1, region 2a!')
@@ -219,8 +219,8 @@ class test_ThermodynamicPropertyBackwards(unittest.TestCase):
         self.assertAlmostEqual(region2.cp(0.0035, 300) / region2.cp_s(0.0035, region2.s(0.0035, 300)), 1.000, places=2, msg='Failed cp consistancy, state 1, region 2!')
         self.assertAlmostEqual(region2.cv(0.0035, 300) / region2.cv_s(0.0035, region2.s(0.0035, 300)), 1.000, places=2, msg='Failed cv consistancy, state 1, region 2!')
         self.assertAlmostEqual(region2.w(0.0035, 300)  / region2.w_s(0.0035,  region2.s(0.0035, 300)), 1.000, places=2, msg='Failed w consistancy,  state 1, region 2!')
-        self.assertAlmostEqual(region2.a(0.0035, 300)  / region2.a_s(0.0035,  region2.s(0.0035, 300)), 1.000, places=2, msg='Failed a consistancy,  state 1, region 2!')
-        self.assertAlmostEqual(region2.k(0.0035, 300)  / region2.k_s(0.0035,  region2.s(0.0035, 300)), 1.000, places=2, msg='Failed k consistancy,  state 1, region 2!')
+        self.assertAlmostEqual(region2.av(0.0035, 300)  / region2.av_s(0.0035,  region2.s(0.0035, 300)), 1.000, places=2, msg='Failed av consistancy,  state 1, region 2!')
+        self.assertAlmostEqual(region2.kT(0.0035, 300)  / region2.kT_s(0.0035,  region2.s(0.0035, 300)), 1.000, places=2, msg='Failed kT consistancy,  state 1, region 2!')
 
         self.assertAlmostEqual(region2.v(0.0035, 700)  / region2.v_s(0.0035,  region2.s(0.0035, 700)), 1.000, places=2, msg='Failed v consistancy,  state 2, region 2!')
         self.assertAlmostEqual(region2.u(0.0035, 700)  / region2.u_s(0.0035,  region2.s(0.0035, 700)), 1.000, places=2, msg='Failed u consistancy,  state 2, region 2!')
@@ -229,8 +229,8 @@ class test_ThermodynamicPropertyBackwards(unittest.TestCase):
         self.assertAlmostEqual(region2.cp(0.0035, 700) / region2.cp_s(0.0035, region2.s(0.0035, 700)), 1.000, places=2, msg='Failed cp consistancy, state 2, region 2!')
         self.assertAlmostEqual(region2.cv(0.0035, 700) / region2.cv_s(0.0035, region2.s(0.0035, 700)), 1.000, places=2, msg='Failed cv consistancy, state 2, region 2!')
         self.assertAlmostEqual(region2.w(0.0035, 700)  / region2.w_s(0.0035,  region2.s(0.0035, 700)), 1.000, places=2, msg='Failed w consistancy,  state 2, region 2!')
-        self.assertAlmostEqual(region2.a(0.0035, 700)  / region2.a_s(0.0035,  region2.s(0.0035, 700)), 1.000, places=2, msg='Failed a consistancy,  state 2, region 2!')
-        self.assertAlmostEqual(region2.k(0.0035, 700)  / region2.k_s(0.0035,  region2.s(0.0035, 700)), 1.000, places=2, msg='Failed k consistancy,  state 2, region 2!')
+        self.assertAlmostEqual(region2.av(0.0035, 700)  / region2.av_s(0.0035,  region2.s(0.0035, 700)), 1.000, places=2, msg='Failed av consistancy,  state 2, region 2!')
+        self.assertAlmostEqual(region2.kT(0.0035, 700)  / region2.kT_s(0.0035,  region2.s(0.0035, 700)), 1.000, places=2, msg='Failed kT consistancy,  state 2, region 2!')
         
         self.assertAlmostEqual(region2.v(30, 700)  / region2.v_s(30,  region2.s(30, 700)), 1.000, places=2, msg='Failed v consistancy,  state 3, region 2!')
         self.assertAlmostEqual(region2.u(30, 700)  / region2.u_s(30,  region2.s(30, 700)), 1.000, places=2, msg='Failed u consistancy,  state 3, region 2!')
@@ -239,8 +239,8 @@ class test_ThermodynamicPropertyBackwards(unittest.TestCase):
         self.assertAlmostEqual(region2.cp(30, 700) / region2.cp_s(30, region2.s(30, 700)), 1.000, places=2, msg='Failed cp consistancy, state 3, region 2!')
         self.assertAlmostEqual(region2.cv(30, 700) / region2.cv_s(30, region2.s(30, 700)), 1.000, places=2, msg='Failed cv consistancy, state 3, region 2!')
         self.assertAlmostEqual(region2.w(30, 700)  / region2.w_s(30,  region2.s(30, 700)), 1.000, places=2, msg='Failed w consistancy,  state 3, region 2!')
-        self.assertAlmostEqual(region2.a(30, 700)  / region2.a_s(30,  region2.s(30, 700)), 1.000, places=2, msg='Failed a consistancy,  state 3, region 2!')
-        self.assertAlmostEqual(region2.k(30, 700)  / region2.k_s(30,  region2.s(30, 700)), 1.000, places=2, msg='Failed k consistancy,  state 3, region 2!')
+        self.assertAlmostEqual(region2.av(30, 700)  / region2.av_s(30,  region2.s(30, 700)), 1.000, places=2, msg='Failed av consistancy,  state 3, region 2!')
+        self.assertAlmostEqual(region2.kT(30, 700)  / region2.kT_s(30,  region2.s(30, 700)), 1.000, places=2, msg='Failed kT consistancy,  state 3, region 2!')
 
 if __name__ == '__main__':
     unittest.main()
