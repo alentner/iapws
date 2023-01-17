@@ -21,3 +21,16 @@ Not implemented equations list:
 Not implemented unit testing list:
 * Wrapper consistancy (partials, sat, ext ...)
 * Region identifications
+
+### Note on Units:
+Units should be:
+* P [Mpa]    = Pressure
+* T [K]      = Temperature
+* v [m^3/kg] = Specific Volume
+	
+### Usage Example:
+	from iapws import h2o, units
+	vf = h2o.vf(P)
+	kT = h2o.kT(units.P(P), 
+              units.T(T),
+              english=True)
