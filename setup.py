@@ -1,23 +1,38 @@
 """A setuptools based setup module for the if97 Python package
 
 """
-from setuptools import setup
+import re
+from setuptools import setup, find_packages
 
-# Get the long description from the README file
-with open('readme.md') as file:
+# get long description from README.rst
+with open('README.md', mode='r') as readme:
+    long_description = readme.read()
 
-    long_description = file.read()
+# get package metadata by parsing __meta__ module
+with open('src/iapws/__meta__.py', mode='r') as source:
+    content = source.read().strip()
+    metadata = {key: re.search(key + r'\s*=\s*[\'"]([^\'"]*)[\'"]', content).group(1)
+                for key in ['__pkgname__', '__version__', '__authors__', '__contact__',
+                            '__license__', '__website__', '__description__']}
+
+# core dependancies
+DEPENDANCIES = ['numpy', 'scipy']
+OPTIONAL_PKG = {'test': ['matplotlib', ], }
 
 # Define the setup configuration
 setup(
-    name = 'if97',
-    version = '1.0.80',
-    description = 'A Python package for providing water properties', 
-    long_description = long_description,
-    url = 'https://github.com/alentner/if97',
-    author = 'Aaron Lentner',
-    author_email = 'aaron.d.lentner@gmail.com',
-    license = 'MIT',
+    name                 = metadata['__pkgname__'],
+    version              = metadata['__version__'],
+    author               = metadata['__authors__'],
+    author_email         = metadata['__contact__'],
+    description          = metadata['__description__'],
+    license              = metadata['__license__'],
+    keywords             = 'water steam properties IAPWS IF97',
+    url                  = metadata['__website__'],
+    packages             = find_packages(where='src'),
+    package_dir          = {'': 'src'},
+    include_package_data = True,
+    long_description     = long_description,
     classifiers = [
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
@@ -25,10 +40,8 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3 :: Only',
         ],
-    keywords = 'water steam properties industrial formulation 97 IAPWS',
-    packages=['if97'],
+    entry_points         = { },
+    install_requires     = DEPENDANCIES,
+    extras_require       = OPTIONAL_PKG, 
     install_requirments = [ ],
-    entry_points = { },
-    include_package_data = True,
-    zip_safe = False
     )
