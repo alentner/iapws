@@ -153,7 +153,7 @@ def av(v, T):
 
 def kT(v, T):
     """Isothermal compressibility [m^3 / kJ]"""
-    return 1 / (v * P(v T) * 1e+03 * bp(v, T))
+    return 1 / (v * P(v * T) * 1e+03 * bp(v, T))
 
 def ap(v, T):
     """Relative pressure coefficient [1 / K]"""
@@ -179,22 +179,22 @@ def dfdv(v, T):
 def dPdv(v, T):
     """ Derivative of pressure [kJ kg / m^3 m^3]
     w.r.t specific volume at constant temperature"""
-    return -P(v, T) * b(v, T)
+    return -P(v, T) * bp(v, T)
 
 def dudv(v, T):
     """ Derivative of specific internal energy [kJ kg / kg m^3]
     w.r.t specific volume at constant temperature"""
-    return P(v, T) * 1e+03 * (T * a(v, T) - 1)
+    return P(v, T) * 1e+03 * (T * ap(v, T) - 1)
 
 def dsdv(v, T):
     """ Derivative of specific entropy [kJ kg / kg K m^3]
     w.r.t specific volume at constant temperature"""
-    return P(v, T) * 1e+03 * a(v, T)
+    return P(v, T) * 1e+03 * ap(v, T)
 
 def dhdv(v, T):
     """ Derivative of specific enthalpy [kJ kg / kg m^3]
     w.r.t specific volume at constant temperature"""
-    return P(v, T) * 1e+03 * (T * a(v, T) - nu * b(v, T))
+    return P(v, T) * 1e+03 * (T * ap(v, T) - v * bp(v, T))
 
 def dfdT(v, T):
     """ Derivative of specific helmholtz free energy [kJ / kg K]
@@ -204,7 +204,7 @@ def dfdT(v, T):
 def dPdT(v, T):
     """ Derivative of pressure [kJ / m^3 K]
     w.r.t temperature at constant specific volume"""
-    return P(v, T) * a(v, T)
+    return P(v, T) * ap(v, T)
 
 def dudT(v, T):
     """ Derivative of specific internal energy [kJ / kg K]
@@ -219,7 +219,7 @@ def dsdT(v, T):
 def dhdT(v, T):
     """ Derivative of specific enthalpy [kJ / kg K]
     w.r.t temperature at constant specific volume"""
-    return cv(v, T) + P(v, T) * 1e+03 * v * a(v, T)
+    return cv(v, T) + P(v, T) * 1e+03 * v * ap(v, T)
 
 ###########################################################
 #####          Pressure-Enthalpy Formulation          #####
