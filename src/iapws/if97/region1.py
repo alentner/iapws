@@ -1,13 +1,39 @@
-"""Provides the thermodynamic properties and derivatives for region 1"""
+"""
+Implements water properties and derivatives for IF97 region 1.
+
+The basic equation for this region is a fundamental equation for the specific
+Gibbs free energy g. This equation is expressed in dimensionless form,
+gamma = g / RT, and reads as follows, where pi = P / Ps and tau = Ts / T.
+
+    g / RT = gamma(pi, tau) = SUM( ni (7.1 - pi)^Ii (tau - 1.222)^Ji )
+
+This module is restricted to providing the following water properties and the
+associated derivatives with respect to pressure, temperature, enthalpy, and
+entropy in region 1. 
+
+The principle references for this module are:
+    
+    International Association for the Properties of Water and Steam, 
+    IAPWS R7-97(2012), Revised Release on the IAPWS Industrial Formulation 1997
+    for the Thermodynamic Properties of Water and Steam (2012),
+    available from: http://www.iapws.org.
+
+    International Association for the Properties of Water and Steam,
+    AN3-07(2018), Revised Advisory Note No. 3: Thermodynamic Derivatives from
+    IAPWS Formulations (2018), available from: http://www.iapws.org.
+
+The dimensionless forward and backward basic equations and their derivatives,
+f(pi, tau) and f(pi, [eta, sigma]) respectively, are defined elsewhere.
+"""
 
 # type annotations
 from __future__ import annotations
 
 # internal libraries
-from .basic1 import gamma, gamma_pi, gamma_pipi, gamma_tau, gamma_tautau, gamma_pitau
-from .basic1 import Ps, Ts, R
-from .backward1 import theta_h, theta_s
-from .backward1 import Ps_h, Ts_h, hs_h, Ps_s, Ts_s, ss_s
+from .basic1 import (Ps, Ts, R,
+        gamma, gamma_pi, gamma_pipi, gamma_pitau, gamma_tau, gamma_tautau)
+from .backward1 import (Ps_h, Ts_h, hs_h, Ps_s, Ts_s, ss_s,
+        theta_h, theta_s)
 from .unit import _kilo_mega
 
 ###########################################################
@@ -200,6 +226,13 @@ def dfdT(P: float, T: float) -> float:
 ###########################################################
 
 #### region 1 properties ####
+def T_h(P: float, h: float) -> float:
+    """Temperature [K].
+    Reference: Equation (11) from R7-97(2012)"""
+    pi = P / Ps_h
+    eta = h / hs_h
+    return theta_h(pi, eta) * Ts_h
+
 def g_h(P: float, h: float) -> float:
     """Specific gibbs free energy [kJ / kg]."""
     return g(P, T_h(P, h))
@@ -215,13 +248,6 @@ def u_h(P: float, h: float) -> float:
 def s_h(P: float, h: float) -> float:
     """Specific entropy [kJ / kg K]."""
     return s(P, T_h(P, h))
-
-def T_h(P: float, h: float) -> float:
-    """Temperature [K].
-    Reference: Equation (11) from R7-97(2012)"""
-    pi = P / Ps_h
-    eta = h / hs_h
-    return theta_h(pi, eta) * Ts_h
 
 def cp_h(P: float, h: float) -> float:
     """Specific isobaric heat capacity [kJ / kg K]."""
@@ -361,6 +387,13 @@ def dfdh_h(P: float, h: float) -> float:
 ###########################################################
 
 #### region 1 properties ####
+def T_s(P: float, s: float) -> float:
+    """Temperature [K].
+    Reference: Equation (13) from R7-97(2012)"""
+    pi = P / Ps_s
+    sigma = s / ss_s
+    return theta_s(pi, sigma) * Ts_bs
+
 def g_s(P, s):
     (P: float, s: float) -> float:
     """Specific gibbs free energy [kJ / kg]."""
@@ -373,13 +406,6 @@ def v_s(P: float, s: float) -> float:
 def u_s(P: float, s: float) -> float:
     """Specific internal energy [kJ / kg]."""
     return u(P, T_s(P, s))   
-
-def T_s(P: float, s: float) -> float:
-    """Temperature [K].
-    Reference: Equation (13) from R7-97(2012)"""
-    pi = P / Ps_s
-    sigma = s / ss_s
-    return theta_s(pi, sigma) * Ts_bs
 
 def h_s(P: float, s: float) -> float:
     """Specific enthalpy [kJ / kg]."""

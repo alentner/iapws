@@ -1,4 +1,24 @@
-"""Provides basic equations for dimensionless specific Gibbs free energy, gamma(pi, theta), and derivatives in region 1."""
+"""
+Implements basic equations for IF97 region 1.
+
+The basic equation for this region is a fundamental equation for the specific 
+Gibbs free energy g. This equation is expressed in dimensionless form, 
+gamma = g / RT, and reads as follows, where pi = P / Ps and tau = Ts / T.
+
+    g / RT = gamma(pi, tau) = SUM( ni (7.1 - pi)^Ii (tau - 1.222)^Ji )
+
+This module is restricted to providing the dimensionless specific Gibbs free
+energy, gamma(pi, tau), and the associated first and second derivatives with
+respect to pi and tau in region 1. The principle reference for this module
+is the IAPWS Industrial Formulation 1997:
+    
+    International Association for the Properties of Water and Steam, IAPWS R7-97(2012),
+    Revised Release on the IAPWS Industrial Formulation 1997 for the Thermodynamic 
+    Properties of Water and Steam (2012), available from: http://www.iapws.org.
+
+The dimensional forward and backward functions and their derivatives, 
+f(P, T) and f(P, [h, s]) respectively, are defined elsewhere in this package.
+"""
 
 # type annotations
 from __future__ import annotations
@@ -7,7 +27,7 @@ from __future__ import annotations
 #####       Constants and Dimensionless Functions     #####
 ###########################################################
 
-# Region 1, forwards equations for f(P, T)
+# Region 1 fitting constants and domain scale factors
 _I = [  0,   0,   0,   0,   0,   0,   0,   0,   1,   1,   1,   1,   1,   1,   2,   2,   2,
         2,   2,   3,   3,   3,   4,   4,   4,   5,   8,   8,  21,  23,  29,  30,  31,  32]
 _J = [ -2,  -1,   0,   1,   2,   3,   4,   5,  -9,  -7,  -1,   0,   1,   3,  -3,   0,   1,
@@ -25,6 +45,7 @@ Ps = 16.53    # [Mpa      ]
 Ts = 1386.0   # [K        ]
 R  = 0.461526 # [kJ / kg K]
 
+# Region 1 dimensionless functions
 def gamma(pi: float, tau: float) -> float:
     """Dimensionless form for the specific Gibbs free energy.
     Reference: Equation (7) from R7-97(2012)"""

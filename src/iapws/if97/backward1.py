@@ -1,4 +1,26 @@
-"""Provides backwards equations for dimensionless temperature, theta(pi, [eta, sigma]) in region 1."""
+"""
+Implements backward equations for IF97 region 1.
+
+For the calculation of properties as function of p,h or of p,s without any 
+iteration, the two backward equations require extremely good numerical 
+consistency with the basic equation. The backward equations for this region
+are expressed in dimensionless form, theta = T / Ts, and read as follows, 
+where pi = P / Ps, theta = T / Ts, eta = h / hs, and sigma = s / ss.
+
+    T / Ts = theta(pi, eta  ) = SUM( ni pi^Ii (eta   + 1)^Ji )
+    T / Ts = theta(pi, sigma) = SUM( ni pi^Ii (sigma + 2)^Ji )
+
+This module is restricted to providing the dimensionless temperature, 
+theta(pi, [eta, sigma]) in region 1. The principle reference for this module
+is the IAPWS Industrial Formulation 1997:
+    
+    International Association for the Properties of Water and Steam, IAPWS R7-97(2012),
+    Revised Release on the IAPWS Industrial Formulation 1997 for the Thermodynamic 
+    Properties of Water and Steam (2012), available from: http://www.iapws.org.
+
+The dimensional forward and backward functions and their derivatives, 
+f(P, T) and f(P, [h, s]) respectively, are defined elsewhere in this package.
+"""
 
 # type annotations
 from __future__ import annotations

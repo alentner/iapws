@@ -54,7 +54,7 @@ def _first(function: F) -> F:
     return cast(F, wrapper)
 
 def _one(*args, **kwargs):
-    """Usefull dummy function for zero result."""
+    """Usefull dummy function for unity result."""
     return 1.000
 
 def _output(_, **kwargs):

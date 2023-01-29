@@ -22,6 +22,11 @@ _temperature = 9 / 5 # [F  ] -> [K  ]
 _pressure = _ftlbm_btu / _volume * _sqft_sqin * _kilo_mega # [psi] -> [Mpa]
 
 #### unit conversion functions ####
+@_conversion(_pressure)
+def P(P: float, /, *, english: bool = True) -> float:
+    """Pressure [psi] -> [MPa]"""
+    return P
+
 def T(T: float, /, *, english: bool = True) -> float:
     """Temperature (quantity) [F] -> [K]"""
     if english:
@@ -29,14 +34,9 @@ def T(T: float, /, *, english: bool = True) -> float:
     else:
         return 9 * (T - 273.15) / 5 + 32
 
-@_conversion(_pressure)
-def P(P: float, /, *, english: bool = True) -> float:
-    """Pressure [psi] -> [MPa]"""
-    return P
-
-@_conversion(_energy / (_mass * _temperature))
+@_conversion(_energy / _mass)
 def g(g: float, /, *, english: bool = True) -> float:
-    """Specific gibbs free energy [Btu / lbm F] -> [kJ / kg K]"""
+    """Specific gibbs free energy [Btu / lbm] -> [kJ / kg]"""
     return g
 
 @_conversion(_volume / _mass)
@@ -84,21 +84,21 @@ def kT(kT: float, /, *, english: bool = True) -> float:
     """Isothermal compressibility [1 / psi] -> [m^3 / kJ]"""
     return kT
 
-#### unit conversion (derivatives) functions ####
-@_conversion(_temperature)
-def dT(T: float, /, *, english: bool = True) -> float:
-    """Temperature (scale) [F] -> [K]"""
-    return T
+@_conversion(_energy / _mass)
+def f(f: float, /, *, english: bool = True) -> float:
+    """Specific helmholtz free energy [Btu / lbm] -> [kJ / kg]"""
+    return f
 
+#### unit conversion (derivatives) functions ####
 @_conversion(_pressure)
 def dP(P: float, /, *, english: bool = True) -> float:
     """Pressure (scale) [psi] -> [MPa]"""
     return P
 
-@_conversion(_energy / (_mass * _temperature))
-def dg(g: float, /, *, english: bool = True) -> float:
-    """Specific gibbs free energy (scale) [Btu / lbm F] -> [kJ / kg K]"""
-    return g
+@_conversion(_temperature)
+def dT(T: float, /, *, english: bool = True) -> float:
+    """Temperature (scale) [F] -> [K]"""
+    return T
 
 @_conversion(_volume / _mass)
 def dv(v: float, /, *, english: bool = True) -> float:
@@ -110,26 +110,36 @@ def du(u: float, /, *, english: bool = True) -> float:
     """Specific internal energy (scale) [Btu / lbm] -> [kJ / kg]"""
     return u
 
+@_conversion(_energy / _mass)
+def dh(h: float, /, *, english: bool = True) -> float:
+    """Specific enthalpy (scale) [Btu / lbm] -> [kJ / kg]"""
+    return h
+
 @_conversion(_energy / (_mass * _temperature))
 def ds(s: float, /, *, english: bool = True) -> float:
     """Specific entropy (scale) [Btu / lbm F] -> [kJ / kg K]"""
     return s
 
 @_conversion(_energy / _mass)
-def dh(h: float, /, *, english: bool = True) -> float:
-    """Specific enthalpy (scale) [Btu / lbm] -> [kJ / kg]"""
-    return h
+def dg(g: float, /, *, english: bool = True) -> float:
+    """Specific gibbs free energy (scale) [Btu / lbm] -> [kJ / kg]"""
+    return g
+
+@_conversion(_energy / _mass)
+def df(f: float, /, *, english: bool = True) -> float:
+    """Specific helmholtz free energy (scale) [Btu / lbm] -> [kJ / kg]"""
+    return f
 
 #### unit conversion (reciprical derivatives) functions ####
-@_conversion(1 / _temperature)
-def d_dT(T: float, /, *, english: bool = True) -> float:
-    """Temperature (inverse) [1 / F] -> [1 / K]"""
-    return 1 / T
-
 @_conversion(1 / _pressure)
 def d_dP(P: float, /, *, english: bool = True) -> float:
     """Pressure (inverse) [1 / psi] -> [1 / MPa]"""
     return 1 / P
+
+@_conversion(1 / _temperature)
+def d_dT(T: float, /, *, english: bool = True) -> float:
+    """Temperature (inverse) [1 / F] -> [1 / K]"""
+    return 1 / T
 
 @_conversion(_mass / _energy)
 def d_dh(h: float, /, *, english: bool = True) -> float:
