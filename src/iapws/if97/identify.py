@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 # internal libraries
-from . import region1, region2, region3, region4, region5
+from . import region1, region2, region3, region4, region5, auxiliary
 from . import unit
 from .support import _english, _output
 
@@ -14,13 +14,14 @@ from .support import _english, _output
 
 @_english((unit.P, unit.T), (_output, ))
 def region(P: float, T: float, /, *, english: bool = False) -> int:
-    """Identification of region from IF97 specification
-    using pressure and temperature as primary varibles"""
+    """Identification of region from IF97 specification,
+    using pressure and temperature as primary varibles.
+    Reference: Figure (1) from R7-97(2012)"""
 
     # Constant boundaries
     Pbnd0  = region2.Pbnd0
-    Pbnd1  = region1.Pbnd1
-    Tbnd0  = region1.Tbnd0
+    Pbnd1  = region2.Pbnd1
+    Tbnd0  = region2.Tbnd0
     Tbnd1  = region5.Tbnd1
     Pbnd50 = region5.Pbnd1
     Tbnd25 = region2.Tbnd1
@@ -29,69 +30,76 @@ def region(P: float, T: float, /, *, english: bool = False) -> int:
 
     # Functional boundaries, as constants
     Pbnd32 = region3.bnd23P(min(max(T, Tbnd13), Tbnd32))
-    Pbnd12 = satP(min(max(T, Tbnd0), Tbnd13))
+    Pbnd12 = region4.satP(min(max(T, Tbnd0), Tbnd13))
 
     # Determine region based on pressure and temperature
     if (Pbnd0 <= P <= Pbnd1) and (Tbnd0 <= T <= Tbnd1):
         if T <= Tbnd13:
             region = 1 if P >= Pbnd12 else 2
         elif T <= Tbnd25:
-            region = 5 if P >= Pbnd32 else 2
-        elif P <= Pbnd50:
-            region = 5
+            region = 3 if P >= Pbnd32 else 2
         else:
-            region = 0
+            region = 5 if P <= Pbnd50 else 0
     else:
         region = 0
 
     # Validate proper region identification
     assert (region != 0), "Water properties not avalable!"
+    assert (region != 3), "Water properties not avalable!"
+    assert (region != 5), "Water properties not avalable!"
     return region
 
 @_english((unit.P, unit.h), (_output, ))
 def region_h(P: float, h: float, /, *, english: bool = False) -> int:
-    """Identification of region from IF97 specification
-    using pressure and enthalpy as primary variables"""
+    """Identification of region from IF97 specification,
+    using pressure and enthalpy as primary variables.
+    Reference: Figure (1) from R7-97(2012)"""
 
-    # Supporting boundaries
-    Tbnd01 = region1.Tbnd01
-    Pbnd4  = satP(Tbnd01)
-    Tbnd25 = region2.Tbnd25
+    # Supporting constants
+    Tbnd0  = region2.Tbnd0
     Tbnd13 = region1.Tbnd13
-    Tbnd32 = region3.bnd23T(min(max(P, 16.5292), 100.0))
-    Tbnd4  = satT(P)
+    Tbnd25 = region2.Tbnd1
 
-    # Enthalpy- pressure boundaries
-    Pbnd0  = region1.Pbnd0
-    Pbnd1  = region1.Pbnd1 
-    hbnd01 = region1.h(Pbnd4, Tbnd01)
-    hbnd25 = region2.h(Pbnd0, Tbnd25)
-    Pbndh1 = satP(Tbnd13)
+    # Constant boundaries
+    Pbnd0  = region2.Pbnd0
+    Pbnd13 = region4.satP(Tbnd13)
+    Pbnd50 = region5.Pbnd1
+    Pbnd1  = region2.Pbnd1 
+    hbnd0  = region2.h(Pbnd0, Tbnd0)
+    hbnd1  = region2.h(Pbnd1, Tbnd25) # region 5 not implemented
+    
+    # Functional boundaries, as constants
+    Tbnd32 = region3.bnd23T(min(max(P, auxiliary.Pbnd0), Pbnd1))
     hbnd13 = region1.h(P, Tbnd13)
     hbnd32 = region2.h(P, Tbnd32)
+    hbnd25 = region2.h(P, Tbnd25)
+    Tbnd4  = region4.satT(P)
     hbnd14 = region1.h(P, Tbnd4)
     hbnd42 = region2.h(P, Tbnd4)
 
-    region = 0
-
-    # Only region 1,2,4 via P,h relations implemented
-    if (P >= Pbnd0) and (h >= hbnd01) and (P <= Pbnd1) and (h <= hbnd25):
-        if (P >= Pbndh1):
-            if (h <= hbnd13):
-                region = 1
-            elif (h >= hbnd32):
+    # Determine region based on pressure and enthalpy
+    if (Pbnd0 <= P <= Pbnd1) and (hbnd0 <= h <= hbnd1):
+        if P >= Pbnd13:
+            if h <= hbnd32:
+                region = 1 if h <= hbnd13 else 3
+            elif h <= hbnd25
                 region = 2
             else:
-                region = 0
+                region = 5 if P <= Pbnd50 else 0
         else:
-            if (h <= hbnd14):
+            if h <= hbnd14:
                 region = 1
-            elif (h >= hbnd42):
-                region = 2
+            elif h <= hbnd25:
+                region = 2 if h >= hbnd42 else 4
             else:
-                region = 4
+                region = 5 if P <= Pbnd50 else 0
+    else:
+        region = 0
 
+    # Validate proper region identification
     assert (region != 0), "Water properties not avalable!"
+    assert (region != 3), "Water properties not avalable!"
+    assert (region != 5), "Water properties not avalable!"
     return region
 
 @_english((unit.P, unit.s), (_output, ))
