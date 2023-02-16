@@ -17,7 +17,7 @@ is the IAPWS Industrial Formulation 1997:
     Properties of Water and Steam (2012), available from: http://www.iapws.org.
 
 The dimensional forward and backward functions and their derivatives, 
-f(P, T) and f(P, [h, s]) respectively, are defined elsewhere in this package.
+g(P, T) and [T, P]([P], [h, s]) respectively, are defined elsewhere in this package.
 """
 
 # type annotations

@@ -14,13 +14,15 @@ from .support import _english, _first, _one, _region, _zero
 ###########################################################
 
 #### water properties ####
-@_english((unit.P, unit.T), (unit.g, ))
-@_region({1: region1.g, 2: region2.g}, identify.region)
-def g(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
+@_english
+@_region
+@_formulation
+def g(P: float, T: float, *, h: float, s: float,
+      english: bool = False, region: int = 0) -> float:
     """Specific gibbs free energy [kJ / kg]"""
     pass
 
-@_english((unit.P, unit.T), (unit.v, ))
+@_english((unit.v, ))
 @_region({1: region1.v, 2: region2.v}, identify.region)
 def v(P: float, T: float, /, *, english: bool = False, region: int = 0) -> float:
     """Specific volume [m^3 / kg]"""

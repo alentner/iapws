@@ -1,19 +1,34 @@
-
+"""Provides supporting routines for region identification in IF97 specification"""
 
 # type annotations
 from __future__ import annotations
 
 # internal libraries
 from . import region1, region2, region3, region4, region5, auxiliary
-from . import unit
-from .support import _english, _output
 
 ###########################################################
 #####          Region Identification Functions        #####
 ###########################################################
 
-@_english((unit.P, unit.T), (_output, ))
-def region(P: float, T: float, /, *, english: bool = False) -> int:
+def region_P(P: float) -> int:
+    """Identification (validate) of region from IF97 specification,
+    using pressure only and assuming two-phase mixture.
+    Reference: Figure (1) from R7-97(2012)"""
+    Pbnd0 = region4.Pbnd0
+    Pbnd1 = region4.Pnbd1
+    assert Pbnd0 <= P <= Pbnd1, "Invalid pressure for two-phase state!" 
+    return 4
+
+def region_T(T: float) -> int:
+    """Identification (validate) of region from IF97 specification,
+    using temperature only and assuming two-phase mixture.
+    Reference: Figure (1) from R7-97(2012)"""
+    Tbnd0 = region4.Tbnd0
+    Tbnd1 = region4.Tbnd1
+    assert Tbnd0 <= T <= Tbnd1, "Invalid temperature for two-phase state!" 
+    return 4
+
+def region_PT(P: float, T: float) -> int:
     """Identification of region from IF97 specification,
     using pressure and temperature as primary varibles.
     Reference: Figure (1) from R7-97(2012)"""
@@ -44,13 +59,12 @@ def region(P: float, T: float, /, *, english: bool = False) -> int:
         region = 0
 
     # Validate proper region identification
-    assert (region != 0), "Water properties not avalable!"
-    assert (region != 3), "Water properties not avalable!"
-    assert (region != 5), "Water properties not avalable!"
+    assert (region != 0), "Water properties not available!"
+    assert (region != 3), "Water properties (r3) not implemented!"
+    assert (region != 5), "Water properties (r5) not implemented!"
     return region
 
-@_english((unit.P, unit.h), (_output, ))
-def region_h(P: float, h: float, /, *, english: bool = False) -> int:
+def region_Ph(P: float, h: float) -> int:
     """Identification of region from IF97 specification,
     using pressure and enthalpy as primary variables.
     Reference: Figure (1) from R7-97(2012)"""
@@ -69,7 +83,7 @@ def region_h(P: float, h: float, /, *, english: bool = False) -> int:
     hbnd1  = region2.h(Pbnd1, Tbnd25) # region 5 not implemented
     
     # Functional boundaries, as constants
-    Tbnd32 = region3.bnd23T(min(max(P, auxiliary.Pbnd0), Pbnd1))
+    Tbnd32 = auxiliary.bnd23T(min(max(P, auxiliary.Pbnd0), Pbnd1))
     hbnd13 = region1.h(P, Tbnd13)
     hbnd32 = region2.h(P, Tbnd32)
     hbnd25 = region2.h(P, Tbnd25)
@@ -102,8 +116,7 @@ def region_h(P: float, h: float, /, *, english: bool = False) -> int:
     assert (region != 5), "Water properties not avalable!"
     return region
 
-@_english((unit.P, unit.s), (_output, ))
-def idRegion_s(P: float, s: float, /, *, english: bool = False) -> int:
+def region_Ps(P: float, s: float) -> int:
     """Identification of region from IF97 specification
     using pressure and enthalpy as primary variables"""
 
@@ -147,4 +160,3 @@ def idRegion_s(P: float, s: float, /, *, english: bool = False) -> int:
 
     assert (region != 0), "Water properties not avalable!"
     return region
-

@@ -30,11 +30,12 @@ f(pi, tau) and f(pi, [eta, sigma]) respectively, are defined elsewhere.
 from __future__ import annotations
 
 # internal libraries
+from .backward1 import T_h, T_s
 from .basic1 import (Ps, Ts, R,
         gamma, gamma_pi, gamma_pipi, gamma_pitau, gamma_tau, gamma_tautau)
-from .backward1 import (Ps_h, Ts_h, hs_h, Ps_s, Ts_s, ss_s,
-        theta_h, theta_s)
 from .unit import _kilo_mega
+import .backward1 as _backward
+import .interate1 as _iterate
 
 ###########################################################
 #####       Range of Validity (Boundary Constants)    #####
@@ -125,153 +126,10 @@ def f(P: float, T: float) -> float:
     return u(P, T) - T * s(P, T)
 
 #### region 1 property derivatives ####
-def dPdP(P: float, T: float) -> float:
-    """Derivative of pressure [kJ m^3 / m^3 kJ],
-    w.r.t pressure at constant temperature.
-    Reference: Table (2) from AN3-07(2018)"""
-    return 1.0
-
-def dTdP(P: float, T: float) -> float:
-    """Derivative of temperature [K m^3 / kJ],
-    w.r.t pressure at constant temperature.
-    Reference: Table (2) from AN3-07(2018)"""
-    return 0.0
-
-def dvdP(P: float, T: float) -> float:
-    """Derivative of specific volume [m^3 m^3 / kg kJ],
-    w.r.t pressure at constant temperature
-    Reference: Table (2) from AN3-07(2018)"""
-    return -v(P, T) * kT(P, T)
-
-def dudP(P: float, T: float) -> float:
-    """Derivative of specific internal energy [kJ m^3 / kg kJ],
-    w.r.t pressure at constant temperature.
-    Reference: Table (2) from AN3-07(2018)"""
-    return v(P, T) * (P * _kilo_mega * kT(P, T) - T * av(P, T))
-
-def dhdP(P: float, T: float) -> float:
-    """Derivative of specific enthalpy [kJ m^3 / kg kJ],
-    w.r.t pressure at constant temperature
-    Reference: Table (2) from AN3-07(2018)"""
-    return v(P, T) * (1 - T * av(P, T))
-
-def dsdP(P: float, T: float) -> float:
-    """Derivative of specific entropy [kJ m^3 / kg K kJ],
-    w.r.t pressure at constant temperature
-    Reference: Table (2) from AN3-07(2018)"""
-    return -v(P, T) * av(P, T)
-
-def dgdP(P: float, T: float) -> float:
-    """Derivative of specific gibbs free energy [kJ m^3 / kg kJ],
-    w.r.t pressure at constant temperature.
-    Reference: Table (2) from AN3-07(2018)"""
-    return v(P, T)
-
-def dfdP(P: float, T: float) -> float:
-    """Derivative of specific helmholtz free energy [kJ m^3 / kg kJ],
-    w.r.t pressure at constant temperature.
-    Reference: Table (2) from AN3-07(2018)"""
-    return (P * _kilo_mega) * v(P, T) * kT(P, T)
-
-def dPdT(P: float, T: float) -> float:
-    """Derivative of pressure [kJ / m^3 K],
-    w.r.t temperature at constant pressure.
-    Reference: Table (2) from AN3-07(2018)"""
-    return 0.0
-
-def dTdT(P: float, T: float) -> float:
-    """Derivative of temperature [K / K],
-    w.r.t temperature at constant pressure.
-    Reference: Table (2) from AN3-07(2018)"""
-    return 1.0
-
-def dvdT(P: float, T: float) -> float:
-    """Derivative of specific volume [m^3 / kg K],
-    w.r.t temperature at constant pressure
-    Reference: Table (2) from AN3-07(2018)"""
-    return v(P, T) * av(P, T)
-
-def dudT(P: float, T: float) -> float:
-    """Derivative of specific internal energy [kJ / kg K],
-    w.r.t temperature at constant pressure
-    Reference: Table (2) from AN3-07(2018)"""
-    return cp(P, T) - (P * _kilo_mega) * v(P, T) * av(P, T)
-
-def dhdT(P: float, T: float) -> float:
-    """Derivative of specific enthalpy [kJ / kg K],
-    w.r.t temperature at constant pressure
-    Reference: Table (2) from AN3-07(2018)"""
-    return cp(P, T)
-
-def dsdT(P: float, T: float) -> float:
-    """Derivative of specific entropy [kJ / kg K K],
-    w.r.t temperature at constant pressure
-    Reference: Table (2) from AN3-07(2018)"""
-    return cp(P, T) / T
-
-def dgdT(P: float, T: float) -> float:
-    """Derivative of specific gibbs free energy [kJ / kg K],
-    w.r.t temperature at constant pressure
-    Reference: Table (2) from AN3-07(2018)"""
-    return -s(P, T)
-
-def dfdT(P: float, T: float) -> float:
-    """Derivative of specific helmholtz free energy [kJ / kg K],
-    w.r.t temperature at constant pressure
-    Reference: Table (2) from AN3-07(2018)"""
-    return -(P * _kilo_mega) * v(P, T) * av(P, T) - s(P, T)
 
 ###########################################################
 #####          Pressure-Enthalpy Formulation          #####
 ###########################################################
-
-#### region 1 properties ####
-def T_h(P: float, h: float) -> float:
-    """Temperature [K].
-    Reference: Equation (11) from R7-97(2012)"""
-    pi = P / Ps_h
-    eta = h / hs_h
-    return theta_h(pi, eta) * Ts_h
-
-def g_h(P: float, h: float) -> float:
-    """Specific gibbs free energy [kJ / kg]."""
-    return g(P, T_h(P, h))
-
-def v_h(P: float, h: float) -> float:
-    """Specific volume [m^3 / kg]."""
-    return v(P, T_h(P, h))
-
-def u_h(P: float, h: float) -> float:
-    """Specific internal energy [kJ / kg]."""
-    return u(P, T_h(P, h))
-
-def s_h(P: float, h: float) -> float:
-    """Specific entropy [kJ / kg K]."""
-    return s(P, T_h(P, h))
-
-def cp_h(P: float, h: float) -> float:
-    """Specific isobaric heat capacity [kJ / kg K]."""
-    return cp(P, T_h(P, h))
-
-def cv_h(P: float, h: float) -> float:
-    """Specific isochoric heat capacity [kJ / kg K]."""
-    return cv(P, T_h(P, h))
-
-def w_h(P: float, h: float) -> float:
-    """Speed of sound [m / s]."""
-    return w(P, T_h(P, h))
-
-def av_h(P: float, h: float) -> float:
-    """Isobaric cubic expansion coefficient [1 / K]."""
-    return av(P, T_h(P, h))
-
-def kT_h(P: float, h: float) -> float:
-    """Isothermal compressibility [m^3 / kJ]."""
-    return kT(P, T_h(P, h))
-
-def f_h(P: float, h: float) -> float:
-    """Specific Helmholtz free energy [kJ / kg]."""
-    return f(P, T_h(P, h))
 
 #### region 1 property derivatives ####
 def dPdP_h(P: float, h: float) -> float:
@@ -385,55 +243,6 @@ def dfdh_h(P: float, h: float) -> float:
 ###########################################################
 #####           Pressure-Entropy Formulation          #####
 ###########################################################
-
-#### region 1 properties ####
-def T_s(P: float, s: float) -> float:
-    """Temperature [K].
-    Reference: Equation (13) from R7-97(2012)"""
-    pi = P / Ps_s
-    sigma = s / ss_s
-    return theta_s(pi, sigma) * Ts_bs
-
-def g_s(P, s):
-    (P: float, s: float) -> float:
-    """Specific gibbs free energy [kJ / kg]."""
-    return g(P, T_s(P, s))
-
-def v_s(P: float, s: float) -> float:
-    """Specific volume [m^3 / kg]."""
-    return v(P, T_s(P, s))
-
-def u_s(P: float, s: float) -> float:
-    """Specific internal energy [kJ / kg]."""
-    return u(P, T_s(P, s))   
-
-def h_s(P: float, s: float) -> float:
-    """Specific enthalpy [kJ / kg]."""
-    return h(P, T_s(P, s))
-
-def cp_s(P: float, s: float) -> float:
-    """Specific isobaric heat capacity [kJ / kg K]."""
-    return cp(P, T_s(P, s))
-
-def cv_s(P: float, s: float) -> float:
-    """Specific isochoric heat capacity [kJ / kg K]."""
-    return cv(P, T_s(P, s))
-
-def w_s(P: float, s: float) -> float:
-    """Speed of sound [m / s]."""
-    return w(P, T_s(P, s))
-
-def av_s(P: float, s: float) -> float:
-    """Isobaric cubic expansion coefficient [1 / K]."""
-    return av(P, T_s(P, s))
-
-def kT_s(P: float, s: float) -> float:
-    """Isothermal compressibility [m^3 / kJ]."""
-    return kT(P, T_s(P, s))
-
-def f_s(P: float, s: float) -> float:
-    """Specific Helmholtz free energy [kJ / kg]."""
-    return f(P, T_s(P, s))
 
 #### region 1 property derivatives ####
 def dPdP_s(P: float, s: float) -> float:

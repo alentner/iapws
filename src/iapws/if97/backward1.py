@@ -10,31 +10,27 @@ where pi = P / Ps, theta = T / Ts, eta = h / hs, and sigma = s / ss.
     T / Ts = theta(pi, eta  ) = SUM( ni pi^Ii (eta   + 1)^Ji )
     T / Ts = theta(pi, sigma) = SUM( ni pi^Ii (sigma + 2)^Ji )
 
-This module is restricted to providing the dimensionless temperature, 
-theta(pi, [eta, sigma]) in region 1. The principle reference for this module
-is the IAPWS Industrial Formulation 1997:
+This module is restricted to providing the backward temperature relation,
+theta(pi, [eta, sigma]), and the backward pressure and temperarure relations,
+pi(eta, sigma) and theta(eta, sigme), in region 1. 
+
+The principle reference for this module is the IAPWS Industrial Formulation 1997:
     
     International Association for the Properties of Water and Steam, IAPWS R7-97(2012),
     Revised Release on the IAPWS Industrial Formulation 1997 for the Thermodynamic 
     Properties of Water and Steam (2012), available from: http://www.iapws.org.
 
-The dimensional forward and backward functions and their derivatives, 
-f(P, T) and f(P, [h, s]) respectively, are defined elsewhere in this package.
+The dimensional forward functions and their derivatives, g(P, T), are defined 
+elsewhere in this package.
 """
 
 # type annotations
 from __future__ import annotations
 
 ###########################################################
-#####       Constants and Dimensionless Functions     #####
+#####          Pressure-Enthalpy Formulation          #####
 ###########################################################
-
-# Region 1, backwards equations for f(P, h)
-Ps_h = 1.0  # [Mpa    ]
-Ts_h = 1.0  # [K      ]
-hs_h = 2500 # [kJ / kg]
-
-def theta_h(pi: float, eta: float) -> float:
+def _theta_h(pi: float, eta: float) -> float:
     """Dimensionless temperature,
     w.r.t. dimensionless enthalpy (eta).
     Reference: Equation (11) from R7-97(2012)"""
@@ -50,12 +46,20 @@ def theta_h(pi: float, eta: float) -> float:
         sum += ni * pi**Ii * (eta + 1.0)**Ji
     return sum
 
-# Region 1, backwards equations for f(P, s)
-Ps_s = 1.0 # [Mpa      ]
-Ts_s = 1.0 # [K        ]
-ss_s = 1.0 # [kJ / kg K]
+def T_h(P: float, h: float) -> float:
+    """Temperature [K].
+    Reference: Equation (11) from R7-97(2012)"""
+    Ps = 1.0  # [Mpa    ]
+    Ts = 1.0  # [K      ]
+    hs = 2500 # [kJ / kg]
+    pi = P / Ps
+    eta = h / hs
+    return _theta_h(pi, eta) * Ts
 
-def theta_s(pi: float, sigma: float) -> float:
+###########################################################
+#####           Pressure-Entropy Formulation          #####
+###########################################################
+def _theta_s(pi: float, sigma: float) -> float:
     """Dimensionless temperature,
     w.r.t. dimensionless entropy (sigma).
     Reference: Equation (13) from R7-97(2012)"""
@@ -70,3 +74,26 @@ def theta_s(pi: float, sigma: float) -> float:
     for Ii, Ji, ni in zip(I, J, n):
         sum += ni * pi**Ii * (sigma + 2.0)**Ji
     return sum
+
+def T_s(P: float, s: float) -> float:
+    """Temperature [K].
+    Reference: Equation (13) from R7-97(2012)"""
+    Ps = 1.0 # [Mpa      ]
+    Ts = 1.0 # [K        ]
+    ss = 1.0 # [kJ / kg K]
+    pi = P / Ps
+    sigma = s / ss
+    return _theta_s(pi, sigma) * Ts
+
+###########################################################
+#####           Enthalpy-Entropy Formulation          #####
+###########################################################
+def P_hs(h: float, s: float) -> float:
+    """Placeholder for future functionality."""
+    assert False, "Formulation P(h, s) is not implemented!"
+    return 0.0
+
+def T_hs(h: float, s: float) -> float:
+    """Placeholder for future functionality."""
+    assert False, "Formulation T(h, s) is not implemented!"
+    return 0.0
