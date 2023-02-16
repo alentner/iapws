@@ -37,9 +37,9 @@ class State:
                           'fg': self._zfg,
                           'f' : self._zf,
                           'g' : self._zg}
-        self._partials = {None: {1: partial(gibbs.dzdxy, equation=self._equation),
-                                 2: partial(gibbs.dzdxy, equation=self._equation),
-                                 3: partial(helmholtz.dzdxy, equation=self._equation),
+        self._partials = {None: {1: partial(gibbs.dzdx_y, equation=self._equation),
+                                 2: partial(gibbs.dzdx_y, equation=self._equation),
+                                 3: partial(helmholtz.dzdx_y, equation=self._equation),
                                  4: self._dzdxy,
                                  5: partial(gibbs.dzdxy, equation=self._equation)}[region],
                           'fg': self._dzfgdxy,

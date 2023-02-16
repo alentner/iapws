@@ -3,8 +3,14 @@
 # type annotations
 from __future__ import annotations
 
-# internal libraries
-from .support import _conversion
+# static analysis
+from typing import cast, Any, Callable, TypeVar
+F = TypeVar('F', bound = Callable[..., Any])
+D = Callable[[F], F]
+
+###########################################################
+#####       Constants and Usefull Abstractions        #####
+###########################################################
 
 # basic conversion constants
 _ftlbm_btu = 7.37562E+2 # [ft lbf] -> [Btu]  
@@ -20,6 +26,23 @@ _temperature = 9 / 5 # [F  ] -> [K  ]
 
 # conversion of compound physical quantities
 _pressure = _ftlbm_btu / _volume * _sqft_sqin * _kilo_mega # [psi] -> [Mpa]
+
+def _conversion(constant: float) -> D:
+    """Usefull decorator factory to implement unit conversions."""
+    def decorator(function: F) -> F:
+        @wraps(function)
+        def wrapper(unit: float, /, *, english: bool = True) -> float:
+            if english:
+                return unit / constant
+            else:
+                return unit * constant
+        wrapper.__name__ = function.__name__
+        return cast(F, wrapper)
+    return decorator
+
+###########################################################
+#####          Thermodynamic Unit Conversions         #####
+###########################################################
 
 #### unit conversion functions ####
 @_conversion(_pressure)

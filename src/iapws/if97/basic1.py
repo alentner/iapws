@@ -20,8 +20,12 @@ The dimensional forward and backward functions and their derivatives,
 g(P, T) and [T, P]([P], [h, s]) respectively, are defined elsewhere in this package.
 """
 
-# type annotations
+# Type annotations
 from __future__ import annotations
+
+# Define public interface
+__all__ = ["Ps", "Ts", "R", "gamma", "gamma_pi", "gamma_tau",
+           "gamma_pipi", "gamma_tautau", "gamma_pitau"]
 
 ###########################################################
 #####       Constants and Dimensionless Functions     #####
@@ -46,6 +50,7 @@ Ts = 1386.0   # [K        ]
 R  = 0.461526 # [kJ / kg K]
 
 # Region 1 dimensionless functions
+
 def gamma(pi: float, tau: float) -> float:
     """Dimensionless form for the specific Gibbs free energy.
     Reference: Equation (7) from R7-97(2012)"""

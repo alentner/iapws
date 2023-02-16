@@ -24,13 +24,19 @@ The dimensional forward functions and their derivatives, g(P, T), are defined
 elsewhere in this package.
 """
 
-# type annotations
+# Type annotations
 from __future__ import annotations
+
+# Define public interface
+__all__ = ["T_Ph", "T_Ps", "P_hs", "T_hs"]
 
 ###########################################################
 #####          Pressure-Enthalpy Formulation          #####
 ###########################################################
-def _theta_h(pi: float, eta: float) -> float:
+
+# Region 1 dimensionless backward equations
+
+def _theta_Ph(pi: float, eta: float) -> float:
     """Dimensionless temperature,
     w.r.t. dimensionless enthalpy (eta).
     Reference: Equation (11) from R7-97(2012)"""
@@ -46,7 +52,9 @@ def _theta_h(pi: float, eta: float) -> float:
         sum += ni * pi**Ii * (eta + 1.0)**Ji
     return sum
 
-def T_h(P: float, h: float) -> float:
+# Region 1 backward properties
+
+def T_Ph(P: float, h: float) -> float:
     """Temperature [K].
     Reference: Equation (11) from R7-97(2012)"""
     Ps = 1.0  # [Mpa    ]
@@ -54,12 +62,15 @@ def T_h(P: float, h: float) -> float:
     hs = 2500 # [kJ / kg]
     pi = P / Ps
     eta = h / hs
-    return _theta_h(pi, eta) * Ts
+    return _theta_Ph(pi, eta) * Ts
 
 ###########################################################
 #####           Pressure-Entropy Formulation          #####
 ###########################################################
-def _theta_s(pi: float, sigma: float) -> float:
+
+# Region 1 dimensionless backward equations
+
+def _theta_Ps(pi: float, sigma: float) -> float:
     """Dimensionless temperature,
     w.r.t. dimensionless entropy (sigma).
     Reference: Equation (13) from R7-97(2012)"""
@@ -75,7 +86,9 @@ def _theta_s(pi: float, sigma: float) -> float:
         sum += ni * pi**Ii * (sigma + 2.0)**Ji
     return sum
 
-def T_s(P: float, s: float) -> float:
+# Region 1 backward properties
+
+def T_Ps(P: float, s: float) -> float:
     """Temperature [K].
     Reference: Equation (13) from R7-97(2012)"""
     Ps = 1.0 # [Mpa      ]
@@ -83,17 +96,20 @@ def T_s(P: float, s: float) -> float:
     ss = 1.0 # [kJ / kg K]
     pi = P / Ps
     sigma = s / ss
-    return _theta_s(pi, sigma) * Ts
+    return _theta_Ps(pi, sigma) * Ts
 
 ###########################################################
 #####           Enthalpy-Entropy Formulation          #####
 ###########################################################
+
+# Region 1 backward properties
+
 def P_hs(h: float, s: float) -> float:
     """Placeholder for future functionality."""
-    assert False, "Formulation P(h, s) is not implemented!"
+    assert False, "Backward Equation P(h, s) is not implemented!"
     return 0.0
 
 def T_hs(h: float, s: float) -> float:
     """Placeholder for future functionality."""
-    assert False, "Formulation T(h, s) is not implemented!"
+    assert False, "Backward Equation T(h, s) is not implemented!"
     return 0.0

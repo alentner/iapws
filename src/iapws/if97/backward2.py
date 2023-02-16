@@ -28,18 +28,23 @@ The dimensional forward and backward functions and their derivatives,
 f(P, T) and f(P, [h, s]) respectively, are defined elsewhere in this package.
 """
 
-# type annotations
+# Type annotations
 from __future__ import annotations
+
+# Define public interface
+__all__ = ["T_Ph", "T_Ps", "P_hs", "T_hs"]
 
 ###########################################################
 #####       Range of Validity (Boundary Constants)    #####
 ###########################################################
-Pbnd0 = 6.54670 # [MPa      ]
-Pbnd1 = 100.0   # [MPa      ]
-Tbnd0 = 554.485 # [K        ]
-Tbnd1 = 1019.32 # [K        ]
-Pbnd2a2b = 4.0  # [MPa      ]
-sbnd2b2c = 5.85 # [kJ / kg K]
+
+# Boundary constants
+_Pbnd0 = 6.54670  # [MPa      ]
+_Pbnd1 = 100.0    # [MPa      ]
+_Tbnd0 = 554.485  # [K        ]
+_Tbnd1 = 1019.32  # [K        ]
+_Pbnd2a2b = 4.0  # [MPa      ]
+_sbnd2b2c = 5.85 # [kJ / kg K]
 
 ###########################################################
 #####       Subregion Identification Functions        #####
@@ -52,51 +57,48 @@ _Ps = 1.0 # [MPa     ]
 _hs = 1.0 # [kJ / kg ]
 
 # Auxiliary functions
-def bnd2b2cP(h: float) -> float:
+
+def _bnd2b2cP(h: float) -> float:
     """Auxiliary equation for subregion 2b and 2c boundary pressure [MPa].
     Reference: Equation (20) from R7-97(2012)"""
     eta = h / _hs
     return _Ps * (_n[0] + _n[1] * eta + _n[2] * eta**2)
 
-def bnd2b2ch(P: float) -> float:
+def _bnd2b2ch(P: float) -> float:
     """Auxiliary equation for subregion 2b and 2c boundary enthalpy [kJ / kg].
     Reference: Equation (21) from R7-97(2012)"""
     pi = P / _Ps
     return _hs * (_n[3] + ((pi - _n[4]) / _n[2])**0.5)
 
 # Subregion identification functions
-def region_h(P: float, h: float) -> int:
+
+def _region_Ph(P: float, h: float) -> int:
     """Identification of subregion of region 2 from IF97 specification,
     using pressure and enthalpy as primary variables.
     Reference: Figure (2) from R7-97(2012)"""
-    if P <= Pbnd2a2b:
+    if P <= _Pbnd2a2b:
         return 1
-    elif (P <= Pbnd0) or (h >= bnd2b2ch(P)):
+    elif (P <= _Pbnd0) or (h >= _bnd2b2ch(P)):
         return 2
-    else:
-        return 3
+    return 3
 
-def region_s(P: float, s: float) -> int:
+def _region_Ps(P: float, s: float) -> int:
     """Identification of subregion of region 2 from IF97 specification,
     using pressure and entropy as primary variables.
     Reference: Figure (2) from R7-97(2012)"""
-    if P <= Pbnd2a2b:
+    if P <= _Pbnd2a2b:
         return 1
-    elif (P <= Pbnd0) or (s >= sbnd2b2c):
+    elif (P <= _Pbnd0) or (s >= _sbnd2b2c):
         return 2
-    else:
-        return 3
+    return 3
 
 ###########################################################
-#####       Constants and Auxiliary Functions         #####
+#####          Pressure-Enthalpy Formulation          #####
 ###########################################################
 
-# Region 2, backwards equations for f(P, h)
-Ps_h = 1.0  # [Mpa    ]
-Ts_h = 1.0  # [K      ]
-hs_h = 2000 # [kJ / kg]
+# Region 2 dimensionless backward equations
 
-def theta2a_h(pi: float, eta: float) -> float:
+def _theta2a_Ph(pi: float, eta: float) -> float:
     """Dimensionless temperature as a function of pressure and enthalpy (2a).
     Reference: Equation (22) from R7-97(2012)"""
     I = [ 0,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  2,
@@ -117,7 +119,7 @@ def theta2a_h(pi: float, eta: float) -> float:
         sum += ni * pi**Ii * (eta - 2.1)**Ji
     return sum
 
-def theta2b_h(pi: float, eta: float) -> float:
+def _theta2b_Ph(pi: float, eta: float) -> float:
     """Dimensionless temperature as a function of pressure and enthalpy (2b).
     Reference: Equation (23) from R7-97(2012)"""
     I = [ 0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  2,  2,  2,
@@ -139,7 +141,7 @@ def theta2b_h(pi: float, eta: float) -> float:
         sum += ni * (pi - 2)**Ii * (eta - 2.6)**Ji
     return sum
 
-def theta2c_h(pi: float, eta: float) -> float:
+def _theta2c_Ph(pi: float, eta: float) -> float:
     """Dimensionless temperature as a function of pressure and enthalpy (2c).
     Reference: Equation (24) from R7-97(2012)"""
    Ic_h = [-7, -7, -6, -6, -5, -5, -2, -2, -1, -1,  0,  0,  1,  1,  2,  6,  6,  6,  6,  6,  6,  6,  6]
@@ -155,13 +157,29 @@ def theta2c_h(pi: float, eta: float) -> float:
         sum += ni * (pi + 25)**Ii * (eta - 1.8)**Ji
     return sum
 
-# Region 2, backwards equations for f(P, s)
-Ps_s  = 1.0    # [Mpa      ]
-Ts_s  = 1.0    # [K        ]
-ss_sa = 2.0    # [kJ / kg K]
-ss_sb = 0.7853 # [kJ / kg K]
-ss_sc = 2.9251 # [kJ / kg K]
+# Region 2 backward properties
 
+def T_Ph(P: float, h: float) -> float:
+    """Temperature [K].
+    Reference: Equation (22), (23), and (24) from R7-97(2012)"""
+    Ps = 1.0  # [Mpa    ]
+    Ts = 1.0  # [K      ]
+    hs = 2000 # [kJ / kg]
+    pi = P / Ps
+    eta = h / hs
+    region = _region_Ph(P, h)
+    if region == 1:
+        return _theta2a_Ph(pi, eta) * Ts
+    elif region == 2:
+        return _theta2b_Ph(pi, eta) * Ts
+    else:
+        return _theta2c_Ph(pi, eta) * Ts
+
+###########################################################
+#####           Pressure-Entropy Formulation          #####
+###########################################################
+
+# Region 2 dimensionless backward equations
 
 def theta2a_s(pi: float, sigma: float) -> float:
     """Dimensionless temperature as a function of pressure and entropy (2a).
@@ -229,8 +247,42 @@ def theta2c_s(pi: float, sigma: float) -> float:
           0.63323132660934e-06, -0.20541989675375e-05,  0.36405370390082e-07, -0.29759897789215e-08,
           0.10136618529763e-07,  0.59925719692351e-11, -0.20677870105164e-10, -0.20874278181886e-10,
           0.10162166825089e-09, -0.16429828281347e-09]
-
     sum = 0
     for Ii, Ji, ni in zip(I, J, n):
         sum += ni * pi**Ii * (2 - sigma)**Ji
     return sum
+
+# Region 2 backward properties
+
+def T_Ps(P: float, s: float) -> float:
+    """Temperature [K].
+    Reference: Equation (25), (26), and (27) from R7-97(2012)"""
+    Ps = 1.0       # [Mpa      ]
+    Ts = 1.0       # [K      ]
+    ss_sa = 2.0    # [kJ / kg K]
+    ss_sb = 0.7853 # [kJ / kg K]
+    ss_sc = 2.9251 # [kJ / kg K]
+    pi = P / Ps
+    region = _region_Ps(P, s)
+    if region is 1:
+        return _theta2a_Ps(pi, s / ss_sa) * Ts
+    elif region is 2:
+        return _theta2b_Ps(pi, s / ss_sb) * Ts
+    else:
+        return _theta2c_Ps(pi, s / ss_sc) * Ts
+
+###########################################################
+#####           Enthalpy-Entropy Formulation          #####
+###########################################################
+
+# Region 2 backward properties
+
+def P_hs(h: float, s: float) -> float:
+    """Placeholder for future functionality."""
+    assert False, "Backward Equation P(h, s) is not implemented!"
+    return 0.0
+
+def T_hs(h: float, s: float) -> float:
+    """Placeholder for future functionality."""
+    assert False, "Backward Equation T(h, s) is not implemented!"
+    return 0.0
